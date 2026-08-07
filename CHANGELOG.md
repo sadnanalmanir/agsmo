@@ -15,7 +15,11 @@ This project follows [Semantic Versioning](https://semver.org/).
 - Core classes: Goal, SubGoal, Constraint, Action, Outcome, Episode, Agent, MemoryEntity
 - Multi-step plans via ordered subgoals (`stepIndex`) and constraints
 - PROV-O alignment for Action, Outcome, and Agent
+- **WIDOCO best-practice metadata** (abstract, introduction, creator entity, citation, codeRepository, status, …)
+- **`skos:example` / `vann:example` on every class and property** so HTML docs are understandable
+- Worked instance example: [`examples/literature_review_plan.ttl`](examples/literature_review_plan.ttl)
 - MIT license, README, documentation, CodeMeta metadata
+- Automated GitHub Pages docs via WIDOCO (LODE term sections)
 
 ### Notes
 

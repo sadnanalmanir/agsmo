@@ -49,8 +49,23 @@ Outcome a agsmo:Outcome , prov:Entity ;
         prov:wasGeneratedBy Action .
 ```
 
+## Examples (for readers)
+
+Every class and property in the OWL file carries:
+
+- `rdfs:label` / `skos:prefLabel`
+- `rdfs:comment` and often `skos:definition`
+- **`skos:example`** (prose) and often **`vann:example`** (Turtle snippet)
+
+These appear in WIDOCO/LODE HTML under each term.
+
+**Complete instance graph:** [`examples/literature_review_plan.ttl`](../examples/literature_review_plan.ttl)  
+— multi-step plan with constraints, ordered subgoals, action, outcome, and PROV links.
+
+Metadata follows the [WIDOCO vocabulary checklist](https://dgarijo.github.io/Widoco/doc/bestPractices/index-en.html) (title, abstract, creators, license, version IRI, code repository, citation, examples, …).
+
 ## Versioning
 
 | Version | Notes |
 |---------|--------|
-| **0.1.0** | Initial public release |
+| **0.1.0** | Initial public release (documentation-quality annotations + worked example) |

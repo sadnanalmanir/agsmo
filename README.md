@@ -37,6 +37,15 @@ g.parse("ontology/agsmo.ttl", format="turtle")
 print(len(g), "triples")
 ```
 
+### Worked example (instance data)
+
+```python
+g.parse("examples/literature_review_plan.ttl", format="turtle")
+# Multi-step plan: root goal + constraints + ordered subgoals + action/outcome
+```
+
+See [`examples/README.md`](examples/README.md). Each ontology term also has `skos:example` / `vann:example` for WIDOCO docs.
+
 ## SPARQL prefix
 
 ```sparql
