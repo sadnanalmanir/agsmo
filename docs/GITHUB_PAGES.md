@@ -34,12 +34,14 @@ Workflow: [`.github/workflows/publish-docs.yml`](../.github/workflows/publish-do
 
 **Pipeline steps:**
 
-1. Checkout repo  
-2. Install Java 17  
-3. Download WIDOCO release JAR  
-4. Run WIDOCO on `ontology/agsmo.ttl`  
+1. **Example SPARQL contracts** (`pytest` on `tests/test_examples.py`) — must pass  
+2. Install Java 17 + download WIDOCO JAR  
+3. Run WIDOCO on `ontology/agsmo.ttl`  
+4. Copy `examples/` into the site  
 5. Upload `site/` as Pages artifact  
-6. Deploy with official `actions/deploy-pages`
+6. Deploy with official `actions/deploy-pages`  
+
+If step 1 fails, docs are **not** rebuilt or published.
 
 **Site URL (after first successful run):**  
 https://sadnanalmanir.github.io/agsmo/

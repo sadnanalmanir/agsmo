@@ -108,3 +108,14 @@ Every class and property in `ontology/agsmo.ttl` also has:
 - `vann:example` — Turtle snippet  
 
 Those appear under each term on the [WIDOCO HTML docs](https://sadnanalmanir.github.io/agsmo/).
+
+## Contract tests (CI)
+
+The stories above are enforced by automated tests:
+
+```bash
+pip install -r requirements-dev.txt
+pytest -q
+```
+
+On GitHub, `pytest` runs before WIDOCO/Pages deploy. If an example stops matching its SPARQL contracts, the build fails.

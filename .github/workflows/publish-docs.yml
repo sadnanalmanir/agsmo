@@ -1,7 +1,8 @@
-# Build WIDOCO HTML docs from ontology/agsmo.ttl and publish to GitHub Pages.
-# WIDOCO embeds LODE for term cross-reference sections.
+# 1) Contract-test progressive examples (SPARQL)
+# 2) Build WIDOCO HTML docs
+# 3) Deploy to GitHub Pages (only if tests pass)
 #
-# Triggers: push to main (ontology or this workflow), or manual run.
+# WIDOCO embeds LODE for term cross-reference sections.
 name: Publish ontology documentation
 
 on:
@@ -9,8 +10,20 @@ on:
     branches: [main]
     paths:
       - "ontology/**"
+      - "examples/**"
+      - "tests/**"
+      - "requirements-dev.txt"
+      - "pytest.ini"
       - "widoco/**"
       - ".github/workflows/publish-docs.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "ontology/**"
+      - "examples/**"
+      - "tests/**"
+      - "requirements-dev.txt"
+      - "pytest.ini"
   workflow_dispatch:
 
 permissions:
@@ -27,7 +40,31 @@ env:
   WIDOCO_JAR: "widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
 
 jobs:
+  test:
+    name: Example SPARQL contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run example contract tests
+        run: pytest -q
+
   build:
+    name: WIDOCO site
+    needs: test
+    # PRs only need tests; full site build/deploy on main + manual
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,10 +89,6 @@ jobs:
           rm -rf site
           mkdir -p site
 
-          # WIDOCO uses LODE-style term docs, WebVOWL diagram, metadata from the TTL.
-          # -uniteSections: single HTML file (works well on GitHub Pages).
-          # Skip -htaccess: Apache rules are useless on static GitHub Pages (use w3id later).
-          # Skip -oops: external service; optional manual evaluation.
           java -jar widoco.jar \
             -ontFile ontology/agsmo.ttl \
             -outFolder site \
@@ -67,17 +100,14 @@ jobs:
             -includeAnnotationProperties \
             -noPlaceHolderText
 
-          # GitHub Pages serves index.html by default
           if [[ -f site/index-en.html && ! -f site/index.html ]]; then
             cp site/index-en.html site/index.html
           fi
 
-          # Ensure ontology + progressive examples are downloadable from the site
           mkdir -p site/ontology site/examples
           cp ontology/agsmo.ttl site/ontology/agsmo.ttl
           cp -R examples/. site/examples/
 
-          # Small landing note for repo visitors who land on /
           if [[ ! -f site/index.html ]]; then
             echo "WIDOCO did not produce index.html; listing site:" >&2
             find site -type f | head -50
@@ -93,7 +123,9 @@ jobs:
           path: site
 
   deploy:
+    name: Deploy GitHub Pages
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

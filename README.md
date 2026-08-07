@@ -56,6 +56,15 @@ g.parse("examples/04_literature_review_full.ttl", format="turtle")
 
 Guide: [`examples/README.md`](examples/README.md). Term-level `skos:example` / `vann:example` also appear in the WIDOCO HTML docs.
 
+### Verify examples (local / CI)
+
+```bash
+pip install -r requirements-dev.txt
+pytest -q
+```
+
+GitHub Actions runs these contracts **before** regenerating GitHub Pages.
+
 ## SPARQL prefix
 
 ```sparql
