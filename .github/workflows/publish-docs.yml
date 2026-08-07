@@ -119,35 +119,7 @@ jobs:
           fi
 
           # Banner on WIDOCO home: link to tutorial (best entry for newcomers)
-          python3 <<'PY'
-from pathlib import Path
-banner = (
-    '<div style="margin:0;padding:0.85rem 1rem;background:#1f6feb;color:#fff;'
-    'font-family:system-ui,sans-serif;font-size:0.95rem;text-align:center">'
-    '<strong>New here?</strong> Start with the '
-    '<a href="tutorial/" style="color:#fff;font-weight:700;text-decoration:underline">'
-    'progressive HTML tutorial</a> '
-    '(goals → plans → actions → failure), then return for the full specification.'
-    '</div>\n'
-)
-for name in ("index.html", "index-en.html"):
-    p = Path("site") / name
-    if not p.is_file():
-        continue
-    html = p.read_text(encoding="utf-8")
-    if "progressive HTML tutorial" in html:
-        continue
-    # Prefer right after <body...>
-    lower = html.lower()
-    i = lower.find("<body")
-    if i == -1:
-        continue
-    j = html.find(">", i)
-    if j == -1:
-        continue
-    p.write_text(html[: j + 1] + "\n" + banner + html[j + 1 :], encoding="utf-8")
-    print(f"banner injected into {name}")
-PY
+          python3 scripts/inject_tutorial_banner.py
 
           ls -la site
           ls -la site/examples
