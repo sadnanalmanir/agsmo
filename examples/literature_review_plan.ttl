@@ -1,18 +1,18 @@
 @prefix agsmo: <https://w3id.org/agsmo/ns#> .
 @prefix prov:  <http://www.w3.org/ns/prov#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 
 ################################################################################
 # AGSMO worked example — multi-step literature review plan
 #
-# This file is pure *instance data* (not the ontology). Load it together with
-# ontology/agsmo.ttl in any RDF tool, e.g.:
+# Instance data only (not the TBox). Load with the ontology:
 #
 #   from rdflib import Graph
 #   g = Graph()
 #   g.parse("ontology/agsmo.ttl", format="turtle")
 #   g.parse("examples/literature_review_plan.ttl", format="turtle")
+#
+# Note: resource names use hyphens (valid Turtle local names), not path slashes.
 #
 # Story:
 #   An agent starts an episode, creates a root goal (plan) with constraints and
@@ -22,68 +22,68 @@
 
 # --- Who / when ---
 
-agsmo:agent/default-agent a agsmo:Agent , prov:Agent ;
+agsmo:agent-default a agsmo:Agent , prov:Agent ;
     agsmo:description "Planning agent used in the offline literature-review demo" .
 
-agsmo:episode/demo-1 a agsmo:Episode ;
+agsmo:episode-demo-1 a agsmo:Episode ;
     agsmo:description "Offline demo: plan a research literature review" ;
     agsmo:timestamp "2026-08-07T12:00:00Z"^^xsd:dateTime .
 
 # --- Constraints (rules for the whole plan) ---
 
-agsmo:constraint/peer-reviewed a agsmo:Constraint ;
+agsmo:constraint-peer-reviewed a agsmo:Constraint ;
     agsmo:description "Prefer peer-reviewed sources" ;
     agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime .
 
-agsmo:constraint/time-box a agsmo:Constraint ;
+agsmo:constraint-time-box a agsmo:Constraint ;
     agsmo:description "Finish within 2 hours of agent time" ;
     agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime .
 
 # --- Root plan goal ---
 
-agsmo:goal/lit-review a agsmo:Goal ;
+agsmo:goal-lit-review a agsmo:Goal ;
     agsmo:description "Complete a literature review on agentic memory systems" ;
     agsmo:status "active" ;
     agsmo:timestamp "2026-08-07T12:00:02Z"^^xsd:dateTime ;
-    agsmo:partOfEpisode agsmo:episode/demo-1 ;
-    agsmo:hasConstraint agsmo:constraint/peer-reviewed , agsmo:constraint/time-box ;
-    agsmo:hasSubGoal agsmo:goal/search-papers , agsmo:goal/summarize .
+    agsmo:partOfEpisode agsmo:episode-demo-1 ;
+    agsmo:hasConstraint agsmo:constraint-peer-reviewed , agsmo:constraint-time-box ;
+    agsmo:hasSubGoal agsmo:goal-search-papers , agsmo:goal-summarize .
 
 # --- Ordered subgoals (the plan steps) ---
 
-agsmo:goal/search-papers a agsmo:SubGoal ;
+agsmo:goal-search-papers a agsmo:SubGoal ;
     agsmo:description "Search recent papers on RDF memory for agents" ;
     agsmo:status "completed" ;
     agsmo:stepIndex 0 ;
     agsmo:timestamp "2026-08-07T12:00:03Z"^^xsd:dateTime ;
-    agsmo:partOfEpisode agsmo:episode/demo-1 ;
-    agsmo:achievedBy agsmo:action/search .
+    agsmo:partOfEpisode agsmo:episode-demo-1 ;
+    agsmo:achievedBy agsmo:action-search .
 
-agsmo:goal/summarize a agsmo:SubGoal ;
+agsmo:goal-summarize a agsmo:SubGoal ;
     agsmo:description "Summarize key architectures and trade-offs" ;
     agsmo:status "active" ;
     agsmo:stepIndex 1 ;
     agsmo:timestamp "2026-08-07T12:00:03Z"^^xsd:dateTime ;
-    agsmo:partOfEpisode agsmo:episode/demo-1 .
+    agsmo:partOfEpisode agsmo:episode-demo-1 .
 
 # --- First step: action + outcome + provenance ---
 
-agsmo:action/search a agsmo:Action , prov:Activity ;
+agsmo:action-search a agsmo:Action , prov:Activity ;
     agsmo:description "Queried open indexes for 'semantic memory agents RDF'" ;
     agsmo:rationale "Need a seed set of papers before summarizing architectures; prefer peer-reviewed sources per plan constraints" ;
     agsmo:timestamp "2026-08-07T12:05:00Z"^^xsd:dateTime ;
-    agsmo:performedBy agsmo:agent/default-agent ;
-    agsmo:partOfEpisode agsmo:episode/demo-1 ;
-    agsmo:hasOutcome agsmo:outcome/search-ok ;
-    prov:wasAssociatedWith agsmo:agent/default-agent .
+    agsmo:performedBy agsmo:agent-default ;
+    agsmo:partOfEpisode agsmo:episode-demo-1 ;
+    agsmo:hasOutcome agsmo:outcome-search-ok ;
+    prov:wasAssociatedWith agsmo:agent-default .
 
-agsmo:outcome/search-ok a agsmo:Outcome , prov:Entity ;
+agsmo:outcome-search-ok a agsmo:Outcome , prov:Entity ;
     agsmo:description "Found 12 candidate papers; 5 highly relevant" ;
     agsmo:success true ;
     agsmo:timestamp "2026-08-07T12:10:00Z"^^xsd:dateTime ;
-    prov:wasGeneratedBy agsmo:action/search .
+    prov:wasGeneratedBy agsmo:action-search .
 
-# --- How a reader should understand progress ---
-# Root goal: still active (step 1 open)
-# Subgoal 0: completed via action/search
-# Subgoal 1: next open step (status active, no action yet)
+# Progress:
+#   Root goal active (step 1 still open)
+#   Subgoal 0 completed via action-search
+#   Subgoal 1 is the next open step
