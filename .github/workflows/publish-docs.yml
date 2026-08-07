@@ -1,0 +1,102 @@
+# Build WIDOCO HTML docs from ontology/agsmo.ttl and publish to GitHub Pages.
+# WIDOCO embeds LODE for term cross-reference sections.
+#
+# Triggers: push to main (ontology or this workflow), or manual run.
+name: Publish ontology documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ontology/**"
+      - "widoco/**"
+      - ".github/workflows/publish-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+env:
+  WIDOCO_VERSION: "v1.4.25"
+  WIDOCO_JAR: "widoco-1.4.25-jar-with-dependencies_JDK-17.jar"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Download WIDOCO
+        run: |
+          set -euo pipefail
+          curl -fsSL -o widoco.jar \
+            "https://github.com/dgarijo/Widoco/releases/download/${WIDOCO_VERSION}/${WIDOCO_JAR}"
+          ls -la widoco.jar
+
+      - name: Generate documentation with WIDOCO
+        run: |
+          set -euo pipefail
+          rm -rf site
+          mkdir -p site
+
+          # WIDOCO uses LODE-style term docs, WebVOWL diagram, metadata from the TTL.
+          # -uniteSections: single HTML file (works well on GitHub Pages).
+          # Skip -htaccess: Apache rules are useless on static GitHub Pages (use w3id later).
+          # Skip -oops: external service; optional manual evaluation.
+          java -jar widoco.jar \
+            -ontFile ontology/agsmo.ttl \
+            -outFolder site \
+            -getOntologyMetadata \
+            -webVowl \
+            -rewriteAll \
+            -uniteSections \
+            -lang en \
+            -includeAnnotationProperties \
+            -noPlaceHolderText
+
+          # GitHub Pages serves index.html by default
+          if [[ -f site/index-en.html && ! -f site/index.html ]]; then
+            cp site/index-en.html site/index.html
+          fi
+
+          # Ensure ontology serializations are downloadable from the site root
+          mkdir -p site/ontology
+          cp ontology/agsmo.ttl site/ontology/agsmo.ttl
+
+          # Small landing note for repo visitors who land on /
+          if [[ ! -f site/index.html ]]; then
+            echo "WIDOCO did not produce index.html; listing site:" >&2
+            find site -type f | head -50
+            exit 1
+          fi
+
+          ls -la site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

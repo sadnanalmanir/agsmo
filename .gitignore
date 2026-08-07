@@ -5,3 +5,7 @@
 .venv/
 __pycache__/
 *.pyc
+# Generated docs (CI builds these; do not commit)
+site/
+widoco.jar
+*.jar

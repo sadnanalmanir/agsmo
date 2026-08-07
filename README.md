@@ -67,6 +67,18 @@ See [docs/ONTOLOGY.md](docs/ONTOLOGY.md) for properties, plan shape, and version
 
 This ontology is used by the **semantic-memory-agent** Python library (agent tool loop + RDFLib store). This repository publishes **only the ontology** for independent citation, reuse, and permanent identifiers.
 
+## Documentation site (GitHub Pages)
+
+Human-readable docs are generated automatically with **[WIDOCO](https://github.com/dgarijo/Widoco)** (which uses **[LODE](https://lode.opencitations.net/)** for term cross-references) on every relevant push to `main`.
+
+| | |
+|--|--|
+| **Site** | https://sadnanalmanir.github.io/agsmo/ |
+| **Workflow** | [`.github/workflows/publish-docs.yml`](.github/workflows/publish-docs.yml) |
+| **How it works** | [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) |
+
+**One-time:** Repo **Settings → Pages → Source = GitHub Actions**, then wait for the workflow (or run it manually under **Actions**).
+
 ## Permanent identifiers (w3id)
 
 Target permanent IRIs use the [w3id.org](https://w3id.org/) pattern:
@@ -74,7 +86,7 @@ Target permanent IRIs use the [w3id.org](https://w3id.org/) pattern:
 - `https://w3id.org/agsmo/ns#`
 - `https://w3id.org/agsmo/ns/0.1#`
 
-A redirect entry on [perma-id/w3id.org](https://github.com/perma-id/w3id.org) can be registered after this repository is public (not required for local use of the Turtle file).
+Register redirects on [perma-id/w3id.org](https://github.com/perma-id/w3id.org) **after** the GitHub Pages site is live (see [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md)).
 
 ## Citation
 
