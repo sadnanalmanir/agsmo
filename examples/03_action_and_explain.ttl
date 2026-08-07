@@ -1,0 +1,39 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# Example 03 — One step executed: Action + Outcome + “why?”
+# =============================================================================
+# Teaching goal: how to answer "Why did you do X?" from the graph.
+# Pattern:
+#   SubGoal --achievedBy--> Action --hasOutcome--> Outcome
+#   Action.rationale holds the human-readable why
+#   PROV dual-typing supports standard provenance tools
+# =============================================================================
+
+agsmo:agent-alice a agsmo:Agent , prov:Agent ;
+    agsmo:description "Alice's research assistant" .
+
+agsmo:goal-write-api a agsmo:SubGoal ;
+    agsmo:description "Write core memory API" ;
+    agsmo:status "completed" ;
+    agsmo:stepIndex 0 ;
+    agsmo:achievedBy agsmo:action-implement-api .
+
+agsmo:action-implement-api a agsmo:Action , prov:Activity ;
+    agsmo:description "Implemented SemanticMemory.create_plan and get_plan_progress" ;
+    agsmo:rationale "Plan APIs must live on the memory layer so offline tests work without an LLM; constraints offline+small-API shaped the public surface" ;
+    agsmo:timestamp "2026-08-07T10:00:00Z"^^xsd:dateTime ;
+    agsmo:performedBy agsmo:agent-alice ;
+    agsmo:hasOutcome agsmo:outcome-api-green ;
+    prov:wasAssociatedWith agsmo:agent-alice .
+
+agsmo:outcome-api-green a agsmo:Outcome , prov:Entity ;
+    agsmo:description "Unit tests for create_plan and progress are green" ;
+    agsmo:success true ;
+    agsmo:timestamp "2026-08-07T10:30:00Z"^^xsd:dateTime ;
+    prov:wasGeneratedBy agsmo:action-implement-api .
+
+# Explainability query (see queries.sparql #Q3):
+#   Action description + rationale + goals it served + outcomes

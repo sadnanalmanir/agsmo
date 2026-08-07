@@ -1,0 +1,68 @@
+# AGSMO tutorial queries
+# Prefix for all examples:
+PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+PREFIX prov:  <http://www.w3.org/ns/prov#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+# -----------------------------------------------------------------------------
+# Q1 — What are the ordered steps of a plan?  (use with 02 or 04)
+# -----------------------------------------------------------------------------
+# SELECT ?step ?status ?desc WHERE {
+#   ?root a agsmo:Goal ;
+#         agsmo:hasSubGoal ?sg .
+#   ?sg agsmo:stepIndex ?step ;
+#       agsmo:status ?status ;
+#       agsmo:description ?desc .
+# }
+# ORDER BY ?step
+
+# -----------------------------------------------------------------------------
+# Q2 — What is the next open step?  (first active subgoal by stepIndex)
+# -----------------------------------------------------------------------------
+# SELECT ?step ?desc WHERE {
+#   ?root agsmo:hasSubGoal ?sg .
+#   ?sg agsmo:status "active" ;
+#       agsmo:stepIndex ?step ;
+#       agsmo:description ?desc .
+# }
+# ORDER BY ?step
+# LIMIT 1
+
+# -----------------------------------------------------------------------------
+# Q3 — Why did we take an action?  (explainability)
+# -----------------------------------------------------------------------------
+# SELECT ?actionDesc ?rationale ?goalDesc ?outcomeDesc ?ok WHERE {
+#   ?a a agsmo:Action ;
+#      agsmo:description ?actionDesc .
+#   OPTIONAL { ?a agsmo:rationale ?rationale }
+#   OPTIONAL {
+#     ?g agsmo:achievedBy ?a ;
+#        agsmo:description ?goalDesc .
+#   }
+#   OPTIONAL {
+#     ?a agsmo:hasOutcome ?o .
+#     ?o agsmo:description ?outcomeDesc ;
+#        agsmo:success ?ok .
+#   }
+# }
+
+# -----------------------------------------------------------------------------
+# Q4 — Which constraints apply to the root plan?
+# -----------------------------------------------------------------------------
+# SELECT ?cDesc WHERE {
+#   ?root a agsmo:Goal ;
+#         agsmo:hasConstraint ?c .
+#   ?c agsmo:description ?cDesc .
+#   FILTER NOT EXISTS { ?parent agsmo:hasSubGoal ?root }
+# }
+
+# -----------------------------------------------------------------------------
+# Q5 — Failed outcomes only  (use with 05)
+# -----------------------------------------------------------------------------
+# SELECT ?action ?outcome WHERE {
+#   ?o a agsmo:Outcome ;
+#      agsmo:success false ;
+#      agsmo:description ?outcome .
+#   ?a agsmo:hasOutcome ?o ;
+#      agsmo:description ?action .
+# }

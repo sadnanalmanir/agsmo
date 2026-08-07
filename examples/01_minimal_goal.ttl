@@ -1,0 +1,20 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# Example 01 — Minimal: one agent, one goal
+# =============================================================================
+# Teaching goal: the smallest useful AGSMO graph.
+# Load: ontology/agsmo.ttl + this file
+# =============================================================================
+
+agsmo:agent-alice a agsmo:Agent ;
+    agsmo:description "Alice's research assistant" .
+
+agsmo:goal-write-abstract a agsmo:Goal ;
+    agsmo:description "Write a 150-word abstract for the workshop paper" ;
+    agsmo:status "active" ;
+    agsmo:timestamp "2026-08-07T09:00:00Z"^^xsd:dateTime .
+
+# What this does NOT show yet: subgoals, constraints, actions, episodes.
+# Next: 02_plan_with_constraints.ttl

@@ -72,9 +72,10 @@ jobs:
             cp site/index-en.html site/index.html
           fi
 
-          # Ensure ontology serializations are downloadable from the site root
-          mkdir -p site/ontology
+          # Ensure ontology + progressive examples are downloadable from the site
+          mkdir -p site/ontology site/examples
           cp ontology/agsmo.ttl site/ontology/agsmo.ttl
+          cp -R examples/. site/examples/
 
           # Small landing note for repo visitors who land on /
           if [[ ! -f site/index.html ]]; then
@@ -84,6 +85,7 @@ jobs:
           fi
 
           ls -la site
+          ls -la site/examples
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

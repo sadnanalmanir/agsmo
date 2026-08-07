@@ -17,7 +17,8 @@ This project follows [Semantic Versioning](https://semver.org/).
 - PROV-O alignment for Action, Outcome, and Agent
 - **WIDOCO best-practice metadata** (abstract, introduction, creator entity, citation, codeRepository, status, …)
 - **`skos:example` / `vann:example` on every class and property** so HTML docs are understandable
-- Worked instance example: [`examples/literature_review_plan.ttl`](examples/literature_review_plan.ttl)
+- Progressive instance examples `examples/01_…`–`05_…` plus `queries.sparql` (tutorial path)
+- Worked happy path: [`examples/04_literature_review_full.ttl`](examples/04_literature_review_full.ttl)
 - MIT license, README, documentation, CodeMeta metadata
 - Automated GitHub Pages docs via WIDOCO (LODE term sections)
 

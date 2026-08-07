@@ -1,0 +1,57 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# Example 05 — Failure path: one step fails → plan rolls up to failed
+# =============================================================================
+# Teaching goal: status is not only "happy path".
+# Pattern (as used by reference tooling):
+#   step0 completed, step1 failed, no active steps left → root status "failed"
+# =============================================================================
+
+agsmo:agent-bot a agsmo:Agent , prov:Agent ;
+    agsmo:description "CI bot running a fragile two-step job" .
+
+agsmo:goal-fragile a agsmo:Goal ;
+    agsmo:description "Run integration suite on staging" ;
+    agsmo:status "failed" ;
+    agsmo:hasSubGoal agsmo:goal-deploy-staging , agsmo:goal-run-e2e .
+
+agsmo:goal-deploy-staging a agsmo:SubGoal ;
+    agsmo:description "Deploy build to staging" ;
+    agsmo:status "completed" ;
+    agsmo:stepIndex 0 ;
+    agsmo:achievedBy agsmo:action-deploy .
+
+agsmo:goal-run-e2e a agsmo:SubGoal ;
+    agsmo:description "Run end-to-end tests" ;
+    agsmo:status "failed" ;
+    agsmo:stepIndex 1 ;
+    agsmo:achievedBy agsmo:action-e2e .
+
+agsmo:action-deploy a agsmo:Action , prov:Activity ;
+    agsmo:description "Deployed image :abc123 to staging" ;
+    agsmo:rationale "Need a live environment before e2e" ;
+    agsmo:performedBy agsmo:agent-bot ;
+    agsmo:hasOutcome agsmo:outcome-deploy-ok ;
+    prov:wasAssociatedWith agsmo:agent-bot .
+
+agsmo:outcome-deploy-ok a agsmo:Outcome , prov:Entity ;
+    agsmo:description "Staging URL healthy" ;
+    agsmo:success true ;
+    prov:wasGeneratedBy agsmo:action-deploy .
+
+agsmo:action-e2e a agsmo:Action , prov:Activity ;
+    agsmo:description "Executed e2e suite against staging" ;
+    agsmo:rationale "Validate user-critical flows after deploy" ;
+    agsmo:performedBy agsmo:agent-bot ;
+    agsmo:hasOutcome agsmo:outcome-e2e-fail ;
+    prov:wasAssociatedWith agsmo:agent-bot .
+
+agsmo:outcome-e2e-fail a agsmo:Outcome , prov:Entity ;
+    agsmo:description "3 tests failed in checkout flow" ;
+    agsmo:success false ;
+    prov:wasGeneratedBy agsmo:action-e2e .
+
+# Contrast with example 04: there the root stays "active" because step1 is still open.

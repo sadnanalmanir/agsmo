@@ -68,39 +68,45 @@ and the `skos:example` / `vann:example` annotations on each class and property b
 
     widoco:introduction """## Why AGSMO?
 
-Most agents remember only chat transcripts or vector embeddings. AGSMO instead treats memory as
-**structured knowledge**: goals, steps, rules, and decisions that you can query with SPARQL and
-explain with provenance.
+Most agents remember only chat transcripts or vector embeddings. AGSMO treats memory as
+**structured knowledge**: goals, steps, rules, and decisions you can query and explain.
 
-## Minimal mental model
+## Mental model (one picture)
 
-1. An **Agent** works in an **Episode** (session).
-2. The agent commits to a **Goal** (optionally a multi-step plan with **SubGoals** and **Constraints**).
-3. For each open subgoal it records an **Action** (with **rationale**) and an **Outcome**.
-4. Subgoal and plan **status** values track progress (`active`, `completed`, `failed`, `abandoned`).
+```
+Agent ──performs──► Action ──hasOutcome──► Outcome
+                       ▲
+                       │ achievedBy
+Episode ◄──partOf── Goal ──hasConstraint──► Constraint
+                     │
+                     └──hasSubGoal──► SubGoal (stepIndex 0..n)
+```
 
-## Quick start (Turtle sketch)
+A multi-step **plan** is a root Goal with ordered SubGoals — there is **no** separate Plan class.
+
+## Learn with progressive examples
+
+In the repository `examples/` folder (load each file *with* `ontology/agsmo.ttl`):
+
+| File | Lesson |
+|------|--------|
+| `01_minimal_goal.ttl` | Smallest graph: Agent + Goal |
+| `02_plan_with_constraints.ttl` | Plan structure + constraints + stepIndex |
+| `03_action_and_explain.ttl` | Action, Outcome, rationale (“why?”) |
+| `04_literature_review_full.ttl` | Full happy path (one step done, one open) |
+| `05_failure_and_rollup.ttl` | Failed step → plan status failed |
+| `queries.sparql` | Copy-paste SPARQL for the above |
+
+Start at 01 and move up. Every class/property below also has a short `skos:example` and a Turtle `vann:example`.
+
+## Tiny sketch
 
 ```turtle
 @prefix agsmo: <https://w3id.org/agsmo/ns#> .
-@prefix prov:  <http://www.w3.org/ns/prov#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-
-agsmo:agent/demo a agsmo:Agent ;
-  agsmo:description "Planning assistant" .
-
-agsmo:goal/ship a agsmo:Goal ;
-  agsmo:description "Ship a library release" ;
-  agsmo:status "active" ;
-  agsmo:hasSubGoal agsmo:goal/step0 .
-
-agsmo:goal/step0 a agsmo:SubGoal ;
-  agsmo:description "Write tests" ;
-  agsmo:status "active" ;
-  agsmo:stepIndex 0 .
+agsmo:agent-alice a agsmo:Agent ; agsmo:description "Assistant" .
+agsmo:goal-x a agsmo:Goal ; agsmo:description "Do X" ; agsmo:status "active" .
 ```
-
-A full worked example is in `examples/literature_review_plan.ttl`."""@en ;
+"""@en ;
 
     # --- People ---
     dcterms:creator [
@@ -132,8 +138,9 @@ A full worked example is in `examples/literature_review_plan.ttl`."""@en ;
                  <https://ocdo.github.io/asmo/> ;
     dcterms:bibliographicCitation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.1.0. https://github.com/sadnanalmanir/agsmo"@en ;
     schema:citation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.1.0. https://github.com/sadnanalmanir/agsmo"@en ;
-    vann:example <https://github.com/sadnanalmanir/agsmo/blob/main/examples/literature_review_plan.ttl> ;
-    skos:example "See repository examples/literature_review_plan.ttl for a complete multi-step plan with constraints, actions, and outcomes."@en .
+    vann:example <https://github.com/sadnanalmanir/agsmo/blob/main/examples/README.md> ;
+    vann:example <https://github.com/sadnanalmanir/agsmo/blob/main/examples/04_literature_review_full.ttl> ;
+    skos:example "Progressive examples in the repository examples/ folder: start with 01_minimal_goal.ttl, then 02–05; full happy path is 04_literature_review_full.ttl; SPARQL in queries.sparql."@en .
 
 ################################################################################
 # Classes

@@ -37,14 +37,24 @@ g.parse("ontology/agsmo.ttl", format="turtle")
 print(len(g), "triples")
 ```
 
-### Worked example (instance data)
+### Progressive examples (instance data)
+
+Read **in order** — each file teaches one idea:
+
+| # | File | Lesson |
+|---|------|--------|
+| 01 | `examples/01_minimal_goal.ttl` | Agent + one Goal |
+| 02 | `examples/02_plan_with_constraints.ttl` | Plan = Goal + SubGoals + Constraints |
+| 03 | `examples/03_action_and_explain.ttl` | Action, Outcome, rationale (“why?”) |
+| 04 | `examples/04_literature_review_full.ttl` | Full happy path |
+| 05 | `examples/05_failure_and_rollup.ttl` | Failure + plan status |
+| — | `examples/queries.sparql` | Tutorial SPARQL |
 
 ```python
-g.parse("examples/literature_review_plan.ttl", format="turtle")
-# Multi-step plan: root goal + constraints + ordered subgoals + action/outcome
+g.parse("examples/04_literature_review_full.ttl", format="turtle")
 ```
 
-See [`examples/README.md`](examples/README.md). Each ontology term also has `skos:example` / `vann:example` for WIDOCO docs.
+Guide: [`examples/README.md`](examples/README.md). Term-level `skos:example` / `vann:example` also appear in the WIDOCO HTML docs.
 
 ## SPARQL prefix
 
