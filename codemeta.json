@@ -1,0 +1,67 @@
+{
+  "@context": "https://w3id.org/codemeta/3.1",
+  "@type": "SoftwareSourceCode",
+  "name": "AGSMO — Agent Semantic Memory Ontology",
+  "identifier": "agsmo",
+  "description": "OWL ontology for agent long-term semantic memory: goals, ordered subgoals (plans), constraints, actions, outcomes, episodes, and agents, with W3C PROV-O alignment for provenance.",
+  "version": "0.1.0",
+  "softwareVersion": "0.1.0",
+  "license": "https://spdx.org/licenses/MIT",
+  "programmingLanguage": [
+    "OWL",
+    "RDF",
+    "Turtle"
+  ],
+  "applicationCategory": "Knowledge Management",
+  "applicationSubCategory": "Ontology / Artificial Intelligence",
+  "keywords": [
+    "ontology",
+    "OWL",
+    "RDF",
+    "SPARQL",
+    "agent memory",
+    "semantic memory",
+    "planning",
+    "provenance",
+    "PROV-O",
+    "AGSMO"
+  ],
+  "dateCreated": "2026-08-07",
+  "dateModified": "2026-08-07",
+  "datePublished": "2026-08-07",
+  "isAccessibleForFree": true,
+  "developmentStatus": "https://www.repostatus.org/#wip",
+  "codeRepository": "https://github.com/sadnanalmanir/agsmo",
+  "url": "https://github.com/sadnanalmanir/agsmo",
+  "issueTracker": "https://github.com/sadnanalmanir/agsmo/issues",
+  "readme": "https://github.com/sadnanalmanir/agsmo/blob/main/README.md",
+  "copyrightHolder": {
+    "@type": "Person",
+    "givenName": "Sadnan",
+    "familyName": "Al Manir",
+    "email": "sadnanalmanir@gmail.com"
+  },
+  "copyrightYear": 2026,
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Sadnan",
+      "familyName": "Al Manir",
+      "email": "sadnanalmanir@gmail.com"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Sadnan",
+      "familyName": "Al Manir",
+      "email": "sadnanalmanir@gmail.com"
+    }
+  ],
+  "releaseNotes": "AGSMO 0.1.0 — initial public release of the Agent Semantic Memory Ontology. Distinct from ASMO (Atomistic Simulation Methods Ontology).",
+  "relatedLink": [
+    "https://www.w3.org/TR/prov-o/",
+    "https://codemeta.github.io/",
+    "https://ocdo.github.io/asmo/"
+  ]
+}

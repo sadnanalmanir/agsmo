@@ -1,0 +1,246 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+
+################################################################################
+# Agent Semantic Memory Ontology (AGSMO)
+#
+# Formal OWL vocabulary for structured long-term memory of agentic systems:
+# goals, multi-step plans (as goal trees), constraints, actions, outcomes,
+# episodes, and agents — with PROV-O alignment for provenance.
+#
+# Namespace (stable):  https://w3id.org/agsmo/ns#
+# Preferred prefix:    agsmo
+# Version:             0.1.0
+#
+# Note: AGSMO is not ASMO (Atomistic Simulation Methods Ontology, materials science).
+################################################################################
+
+agsmo: a owl:Ontology ;
+    owl:versionIRI <https://w3id.org/agsmo/ns/0.1#> ;
+    owl:versionInfo "0.1.0" ;
+    dcterms:title "Agent Semantic Memory Ontology"@en ;
+    dcterms:alternative "AGSMO"@en ;
+    dcterms:description """OWL ontology for agent long-term semantic memory:
+goals and ordered subgoals (plans), constraints, actions, outcomes, episodes,
+and agents. Designed for offline RDFLib use and SPARQL queryability, with
+alignment to W3C PROV-O for provenance."""@en ;
+    dcterms:creator "Sadnan Al Manir" ;
+    dcterms:created "2026-08-07"^^xsd:date ;
+    dcterms:modified "2026-08-07"^^xsd:date ;
+    dcterms:license <https://spdx.org/licenses/MIT> ;
+    dcterms:rights "Copyright (c) 2026 Sadnan Al Manir" ;
+    vann:preferredNamespacePrefix "agsmo" ;
+    vann:preferredNamespaceUri "https://w3id.org/agsmo/ns#" ;
+    rdfs:label "Agent Semantic Memory Ontology"@en ;
+    rdfs:comment "Use agsmo: as the preferred prefix. Instance data should use this namespace for types and properties defined here."@en ;
+    rdfs:seeAlso <https://www.w3.org/TR/prov-o/> ,
+                 <https://codemeta.github.io/> ;
+    # PROV-O is referenced by URI (alignment). RDFLib does not auto-fetch imports;
+    # reasoners that support owl:imports may resolve this optionally.
+    owl:imports <http://www.w3.org/ns/prov-o#> .
+
+################################################################################
+# Upper structure
+################################################################################
+
+agsmo:MemoryEntity a owl:Class ;
+    rdfs:label "Memory entity"@en ;
+    rdfs:comment "Abstract root for resources that belong to agent semantic memory."@en ;
+    owl:disjointWith agsmo:Agent .
+
+agsmo:Agent a owl:Class ;
+    rdfs:label "Agent"@en ;
+    rdfs:comment "An autonomous actor (software or human-in-the-loop) that performs actions and pursues goals."@en ;
+    rdfs:subClassOf prov:Agent ;
+    skos:definition "Performer of agsmo:Action instances."@en .
+
+agsmo:Goal a owl:Class ;
+    rdfs:label "Goal"@en ;
+    rdfs:comment "A desired state or objective. Multi-step plans are represented as a root Goal with ordered SubGoal children (no separate Plan class)."@en ;
+    rdfs:subClassOf agsmo:MemoryEntity ;
+    skos:definition "Objective that may be decomposed into subgoals and achieved by actions."@en .
+
+agsmo:SubGoal a owl:Class ;
+    rdfs:label "Sub-goal"@en ;
+    rdfs:comment "A goal that is part of a larger goal/plan. Typically carries agsmo:stepIndex when created via create_plan."@en ;
+    rdfs:subClassOf agsmo:Goal .
+
+agsmo:Constraint a owl:Class ;
+    rdfs:label "Constraint"@en ;
+    rdfs:comment "A rule, limit, or preference the agent must respect while pursuing a goal (budget, tools, policy, style, etc.)."@en ;
+    rdfs:subClassOf agsmo:MemoryEntity .
+
+agsmo:Action a owl:Class ;
+    rdfs:label "Action"@en ;
+    rdfs:comment "Something the agent did (or attempted). Dual-typed as prov:Activity in instance data for provenance."@en ;
+    rdfs:subClassOf agsmo:MemoryEntity ,
+                    prov:Activity .
+
+agsmo:Outcome a owl:Class ;
+    rdfs:label "Outcome"@en ;
+    rdfs:comment "Result of an action. Dual-typed as prov:Entity in instance data."@en ;
+    rdfs:subClassOf agsmo:MemoryEntity ,
+                    prov:Entity .
+
+agsmo:Episode a owl:Class ;
+    rdfs:label "Episode"@en ;
+    rdfs:comment "A coherent session or window of work linking goals and actions (e.g. one chat session or offline demo run)."@en ;
+    rdfs:subClassOf agsmo:MemoryEntity .
+
+# Controlled vocabulary individuals for goal status (instance data may still
+# use plain xsd:string values "active"|"completed"|"failed"|"abandoned" for
+# interoperability with the Python library).
+agsmo:GoalStatus a owl:Class ;
+    rdfs:label "Goal status"@en ;
+    rdfs:comment "Controlled concept for goal lifecycle state. Library encodes status as xsd:string; these individuals document the allowed values."@en ;
+    rdfs:subClassOf skos:Concept .
+
+agsmo:statusActive a agsmo:GoalStatus ;
+    rdfs:label "active"@en ;
+    skos:notation "active" ;
+    skos:prefLabel "active"@en .
+
+agsmo:statusCompleted a agsmo:GoalStatus ;
+    rdfs:label "completed"@en ;
+    skos:notation "completed" ;
+    skos:prefLabel "completed"@en .
+
+agsmo:statusFailed a agsmo:GoalStatus ;
+    rdfs:label "failed"@en ;
+    skos:notation "failed" ;
+    skos:prefLabel "failed"@en .
+
+agsmo:statusAbandoned a agsmo:GoalStatus ;
+    rdfs:label "abandoned"@en ;
+    skos:notation "abandoned" ;
+    skos:prefLabel "abandoned"@en .
+
+################################################################################
+# Object properties
+################################################################################
+
+agsmo:hasSubGoal a owl:ObjectProperty ,
+                 owl:TransitiveProperty ;
+    rdfs:label "has sub-goal"@en ;
+    rdfs:comment "Decomposes a goal into a child goal. Ordered multi-step plans use this with agsmo:stepIndex on children."@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range agsmo:Goal ;
+    owl:inverseOf agsmo:subGoalOf .
+
+agsmo:subGoalOf a owl:ObjectProperty ;
+    rdfs:label "sub-goal of"@en ;
+    rdfs:comment "Inverse of agsmo:hasSubGoal. Optional in instance data; the library currently writes only hasSubGoal."@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range agsmo:Goal ;
+    owl:inverseOf agsmo:hasSubGoal .
+
+agsmo:hasConstraint a owl:ObjectProperty ;
+    rdfs:label "has constraint"@en ;
+    rdfs:comment "Associates a constraint with a goal (typically the root plan goal)."@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range agsmo:Constraint .
+
+agsmo:achievedBy a owl:ObjectProperty ;
+    rdfs:label "achieved by"@en ;
+    rdfs:comment "Links a goal to an action taken in service of that goal."@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range agsmo:Action .
+
+agsmo:hasOutcome a owl:ObjectProperty ;
+    rdfs:label "has outcome"@en ;
+    rdfs:comment "Links an action to its outcome. Instance data also uses prov:wasGeneratedBy from outcome to action."@en ;
+    rdfs:domain agsmo:Action ;
+    rdfs:range agsmo:Outcome ;
+    owl:inverseOf agsmo:outcomeOf .
+
+agsmo:outcomeOf a owl:ObjectProperty ;
+    rdfs:label "outcome of"@en ;
+    rdfs:domain agsmo:Outcome ;
+    rdfs:range agsmo:Action ;
+    owl:inverseOf agsmo:hasOutcome .
+
+agsmo:performedBy a owl:ObjectProperty ;
+    rdfs:label "performed by"@en ;
+    rdfs:comment "Agent that performed the action. Aligns with prov:wasAssociatedWith."@en ;
+    rdfs:domain agsmo:Action ;
+    rdfs:range agsmo:Agent ;
+    rdfs:subPropertyOf prov:wasAssociatedWith .
+
+agsmo:partOfEpisode a owl:ObjectProperty ;
+    rdfs:label "part of episode"@en ;
+    rdfs:comment "Places a goal or action in a session/episode."@en ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( agsmo:Goal agsmo:Action )
+    ] ;
+    rdfs:range agsmo:Episode .
+
+################################################################################
+# Datatype properties
+################################################################################
+
+agsmo:description a owl:DatatypeProperty ;
+    rdfs:label "description"@en ;
+    rdfs:comment "Human-readable description of a memory entity or agent."@en ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( agsmo:MemoryEntity agsmo:Agent )
+    ] ;
+    rdfs:range xsd:string .
+
+agsmo:timestamp a owl:DatatypeProperty ;
+    rdfs:label "timestamp"@en ;
+    rdfs:comment "Creation or event time in UTC (xsd:dateTime)."@en ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf ( agsmo:MemoryEntity agsmo:Agent )
+    ] ;
+    rdfs:range xsd:dateTime .
+
+agsmo:status a owl:DatatypeProperty ;
+    rdfs:label "status"@en ;
+    rdfs:comment """Lifecycle status of a goal. Controlled values used by the library:
+'active', 'completed', 'failed', 'abandoned'. See agsmo:GoalStatus individuals."""@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range xsd:string .
+
+agsmo:success a owl:DatatypeProperty ;
+    rdfs:label "success"@en ;
+    rdfs:comment "Whether an outcome is considered successful."@en ;
+    rdfs:domain agsmo:Outcome ;
+    rdfs:range xsd:boolean .
+
+agsmo:stepIndex a owl:DatatypeProperty ,
+                 owl:FunctionalProperty ;
+    rdfs:label "step index"@en ;
+    rdfs:comment "0-based order of a subgoal within a multi-step plan. Stable ordering for next-open-step planning."@en ;
+    rdfs:domain agsmo:Goal ;
+    rdfs:range xsd:integer .
+
+agsmo:rationale a owl:DatatypeProperty ;
+    rdfs:label "rationale"@en ;
+    rdfs:comment "Why an action was chosen (explainability). Prefer this property over rdfs:comment for action rationales."@en ;
+    rdfs:domain agsmo:Action ;
+    rdfs:range xsd:string .
+
+################################################################################
+# Notes for consumers
+################################################################################
+
+# Plan modelling (design decision D4):
+#   A multi-step plan is a root agsmo:Goal with one or more agsmo:SubGoal children
+#   ordered by agsmo:stepIndex, optional agsmo:Constraint on the root, and
+#   agsmo:Action / agsmo:Outcome attached primarily to subgoals.
+#
+# PROV-O usage in instance graphs:
+#   Action  a agsmo:Action , prov:Activity ;
+#           prov:wasAssociatedWith Agent .
+#   Outcome a agsmo:Outcome , prov:Entity ;
+#           prov:wasGeneratedBy Action .
