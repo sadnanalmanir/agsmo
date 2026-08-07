@@ -1,5 +1,8 @@
 # AGSMO examples — learn by building up
 
+**Preferred reading UI:** [HTML tutorial on GitHub Pages](https://sadnanalmanir.github.io/agsmo/tutorial/)  
+(source: [`docs/tutorial.html`](../docs/tutorial.html))
+
 These files are **instance graphs** (ABox). Always load the TBox first:
 
 ```bash

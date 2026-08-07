@@ -43,8 +43,15 @@ Workflow: [`.github/workflows/publish-docs.yml`](../.github/workflows/publish-do
 
 If step 1 fails, docs are **not** rebuilt or published.
 
-**Site URL (after first successful run):**  
-https://sadnanalmanir.github.io/agsmo/
+**Site URLs (after a successful run):**
+
+| Page | URL |
+|------|-----|
+| Progressive tutorial (start here) | https://sadnanalmanir.github.io/agsmo/tutorial/ |
+| WIDOCO ontology specification | https://sadnanalmanir.github.io/agsmo/ |
+| Raw examples | https://sadnanalmanir.github.io/agsmo/examples/ |
+
+The tutorial is source-controlled as `docs/tutorial.html` and copied to `site/tutorial/index.html` on each deploy. A banner on the WIDOCO home page links to it.
 
 ## One-time GitHub settings (required)
 

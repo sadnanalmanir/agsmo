@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AGSMO Tutorial — Learn agent semantic memory by example</title>
+  <meta name="description" content="Progressive tutorial for the Agent Semantic Memory Ontology (AGSMO): goals, plans, constraints, actions, outcomes, and provenance." />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --panel-2: #243044;
+      --text: #e7ecf3;
+      --muted: #9aa8bc;
+      --accent: #5b9fd4;
+      --accent-2: #7dcea0;
+      --warn: #e8b86d;
+      --danger: #e07a7a;
+      --border: #2f3d52;
+      --code-bg: #0b1016;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --radius: 12px;
+      --max: 880px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f8fb;
+        --panel: #ffffff;
+        --panel-2: #eef3f9;
+        --text: #1b2430;
+        --muted: #5b6b7c;
+        --accent: #1f6feb;
+        --accent-2: #1a7f4b;
+        --warn: #9a6700;
+        --danger: #b42318;
+        --border: #d5dee8;
+        --code-bg: #f0f4f8;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { text-decoration-thickness: 2px; }
+    header.hero {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel) 0%, var(--bg) 100%);
+      padding: 2.5rem 1.25rem 2rem;
+    }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 1.25rem 4rem; }
+    .hero .wrap { padding-bottom: 0; }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+      font-weight: 750;
+    }
+    .lead { color: var(--muted); font-size: 1.08rem; max-width: 48rem; margin: 0 0 1.25rem; }
+    .nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.25rem 0 0.25rem;
+    }
+    .nav-pills a {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-pills a:hover { border-color: var(--accent); color: var(--accent); }
+    .meta-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      margin-top: 1.25rem;
+      font-size: 0.95rem;
+    }
+    nav.toc {
+      margin: 2rem 0;
+      padding: 1.1rem 1.25rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    nav.toc h2 { margin: 0 0 0.6rem; font-size: 1rem; }
+    nav.toc ol { margin: 0; padding-left: 1.25rem; }
+    nav.toc li { margin: 0.3rem 0; }
+    section.lesson {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    section.lesson h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.35rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 0.75rem;
+    }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background: var(--panel-2);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .badge.warn { color: var(--warn); }
+    .badge.ok { color: var(--accent-2); }
+    .badge.bad { color: var(--danger); }
+    .learn {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .grid-2 {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 760px) {
+      .grid-2 { grid-template-columns: 1.05fr 0.95fr; }
+    }
+    .card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+    }
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    pre, code { font-family: var(--mono); font-size: 0.84rem; }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      overflow-x: auto;
+      margin: 0;
+      line-height: 1.45;
+    }
+    .diagram {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      white-space: pre;
+      overflow-x: auto;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      color: var(--text);
+    }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--panel-2);
+      padding: 0.75rem 1rem;
+      border-radius: 0 10px 10px 0;
+      margin: 1rem 0 0;
+    }
+    .callout.ok { border-left-color: var(--accent-2); }
+    .callout.bad { border-left-color: var(--danger); }
+    .callout strong { display: block; margin-bottom: 0.2rem; }
+    .file-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .model {
+      margin: 2rem 0;
+      padding: 1.25rem 1.4rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .model h2 { margin-top: 0; font-size: 1.2rem; }
+    ul.tight { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+    ul.tight li { margin: 0.25rem 0; }
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1rem 0 0;
+    }
+    .steps span {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .steps span.here {
+      color: var(--text);
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 15%, var(--panel-2));
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">AGSMO · v0.1.0 tutorial</div>
+      <h1>Learn agent semantic memory by example</h1>
+      <p class="lead">
+        A progressive walkthrough of the
+        <strong>Agent Semantic Memory Ontology (AGSMO)</strong>:
+        goals, multi-step plans, constraints, actions, outcomes, and “why?” provenance.
+        Each lesson adds one idea. Load every graph together with
+        <code>ontology/agsmo.ttl</code>.
+      </p>
+      <div class="nav-pills" aria-label="Quick links">
+        <a href="./">Ontology docs (WIDOCO)</a>
+        <a href="../examples/">Example files</a>
+        <a href="https://github.com/sadnanalmanir/agsmo">GitHub</a>
+        <a href="../ontology/agsmo.ttl">agsmo.ttl</a>
+      </div>
+      <div class="meta-links">
+        <span>Prefix: <code>agsmo:</code></span>
+        <span>Namespace: <code>https://w3id.org/agsmo/ns#</code></span>
+        <span>Not <a href="https://ocdo.github.io/asmo/">ASMO</a> (materials science)</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#model">Mental model</a></li>
+        <li><a href="#lesson-01">Lesson 01 — Minimal goal</a></li>
+        <li><a href="#lesson-02">Lesson 02 — Plan with constraints</a></li>
+        <li><a href="#lesson-03">Lesson 03 — Action, outcome, explain</a></li>
+        <li><a href="#lesson-04">Lesson 04 — Full happy path</a></li>
+        <li><a href="#lesson-05">Lesson 05 — Failure and roll-up</a></li>
+        <li><a href="#try">Try it (Python + SPARQL)</a></li>
+        <li><a href="#ci">Contract tests</a></li>
+      </ol>
+    </nav>
+
+    <section class="model" id="model">
+      <h2>Mental model</h2>
+      <p class="learn">One picture for all lessons. A <em>plan</em> is a root <strong>Goal</strong> with ordered <strong>SubGoals</strong> — there is no separate Plan class.</p>
+      <div class="diagram">Agent ──performedBy──► Action ──hasOutcome──► Outcome
+                           ▲
+                           │ achievedBy
+Episode ◄──partOf── Goal/SubGoal ──hasConstraint──► Constraint
+                      │
+                      └──hasSubGoal──► SubGoal (stepIndex 0..n)</div>
+      <ul class="tight">
+        <li><strong>status</strong> on goals: <code>active</code> · <code>completed</code> · <code>failed</code> · <code>abandoned</code></li>
+        <li><strong>stepIndex</strong> orders plan steps (0-based); next open step = lowest active index</li>
+        <li><strong>rationale</strong> on actions answers “why did you do X?”</li>
+        <li>Actions/Outcomes are also typed as <code>prov:Activity</code> / <code>prov:Entity</code></li>
+      </ul>
+    </section>
+
+    <!-- 01 -->
+    <section class="lesson" id="lesson-01">
+      <h2><span class="badge">01</span> Minimal goal</h2>
+      <p class="learn">Smallest useful graph: one agent, one goal. No plan, no actions yet.</p>
+      <div class="steps">
+        <span class="here">01 minimal</span><span>02 plan</span><span>03 action</span><span>04 full</span><span>05 failure</span>
+      </div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Story</h3>
+          <p>Alice’s assistant commits to writing a short abstract. Status stays <code>active</code> until work is recorded later.</p>
+          <div class="diagram">Agent: Alice's research assistant
+└── Goal: Write a 150-word abstract
+      status = active</div>
+        </div>
+        <div class="card">
+          <h3>Key triples</h3>
+<pre>agsmo:agent-alice a agsmo:Agent ;
+  agsmo:description "Alice's research assistant" .
+
+agsmo:goal-write-abstract a agsmo:Goal ;
+  agsmo:description "Write a 150-word abstract…" ;
+  agsmo:status "active" .</pre>
+        </div>
+      </div>
+      <div class="callout ok">
+        <strong>You should observe</strong>
+        Exactly one Goal; status <code>active</code>; zero Actions.
+      </div>
+      <a class="file-link" href="../examples/01_minimal_goal.ttl">Open 01_minimal_goal.ttl</a>
+    </section>
+
+    <!-- 02 -->
+    <section class="lesson" id="lesson-02">
+      <h2><span class="badge">02</span> Plan with constraints</h2>
+      <p class="learn">A multi-step plan = root Goal + ordered SubGoals + Constraints. Still no actions.</p>
+      <div class="steps">
+        <span>01 minimal</span><span class="here">02 plan</span><span>03 action</span><span>04 full</span><span>05 failure</span>
+      </div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Story</h3>
+          <p>Ship a library release under offline-friendly and small-API constraints. Three ordered steps; all still active.</p>
+          <div class="diagram">Goal (plan): Ship MVP   status=active
+├── Constraint: offline-capable
+├── Constraint: small public API
+├── SubGoal [0] Write core memory API     active
+├── SubGoal [1] Add unit tests            active
+└── SubGoal [2] Publish docs              active
+        ↑ next open step = stepIndex 0</div>
+        </div>
+        <div class="card">
+          <h3>Key triples</h3>
+<pre>agsmo:goal-ship-mvp a agsmo:Goal ;
+  agsmo:status "active" ;
+  agsmo:hasConstraint agsmo:constraint-offline ;
+  agsmo:hasSubGoal agsmo:goal-write-api ,
+                   agsmo:goal-add-tests ,
+                   agsmo:goal-write-docs .
+
+agsmo:goal-write-api a agsmo:SubGoal ;
+  agsmo:stepIndex 0 ;
+  agsmo:status "active" .</pre>
+        </div>
+      </div>
+      <div class="callout ok">
+        <strong>You should observe</strong>
+        Three SubGoals with <code>stepIndex</code> 0,1,2; next open step is <strong>0</strong>; root has ≥2 constraints.
+      </div>
+      <a class="file-link" href="../examples/02_plan_with_constraints.ttl">Open 02_plan_with_constraints.ttl</a>
+    </section>
+
+    <!-- 03 -->
+    <section class="lesson" id="lesson-03">
+      <h2><span class="badge">03</span> Action, outcome, explain</h2>
+      <p class="learn">Execute one step: Action + Outcome + <code>rationale</code> for explainability. PROV dual-typing included.</p>
+      <div class="steps">
+        <span>01 minimal</span><span>02 plan</span><span class="here">03 action</span><span>04 full</span><span>05 failure</span>
+      </div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Story</h3>
+          <p>The agent implements plan APIs offline-first, records why, and marks the step completed via a successful outcome.</p>
+          <div class="diagram">SubGoal [0] Write core memory API   completed
+└── Action: Implemented create_plan…
+      rationale: offline tests; small API…
+      └── Outcome: tests green   success=true</div>
+        </div>
+        <div class="card">
+          <h3>Key triples</h3>
+<pre>agsmo:goal-write-api agsmo:achievedBy agsmo:action-implement-api .
+
+agsmo:action-implement-api a agsmo:Action , prov:Activity ;
+  agsmo:rationale "Plan APIs must live…" ;
+  agsmo:hasOutcome agsmo:outcome-api-green ;
+  prov:wasAssociatedWith agsmo:agent-alice .
+
+agsmo:outcome-api-green a agsmo:Outcome , prov:Entity ;
+  agsmo:success true ;
+  prov:wasGeneratedBy agsmo:action-implement-api .</pre>
+        </div>
+      </div>
+      <div class="callout ok">
+        <strong>You should observe</strong>
+        Non-empty <code>rationale</code>; outcome <code>success true</code>; goal linked with <code>achievedBy</code>.
+        This is how “Why did you do X?” is answered from the graph.
+      </div>
+      <a class="file-link" href="../examples/03_action_and_explain.ttl">Open 03_action_and_explain.ttl</a>
+    </section>
+
+    <!-- 04 -->
+    <section class="lesson" id="lesson-04">
+      <h2><span class="badge ok">04</span> Full happy path</h2>
+      <p class="learn">End-to-end narrative: episode + plan + constraints + one finished step + one open step.</p>
+      <div class="steps">
+        <span>01 minimal</span><span>02 plan</span><span>03 action</span><span class="here">04 full</span><span>05 failure</span>
+      </div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Story</h3>
+          <p>Literature review plan. Step 0 (search) is done; step 1 (summarize) is next. Root stays <code>active</code>.</p>
+          <div class="diagram">Episode: literature demo
+└── Goal: literature review   status=active
+    ├── Constraint: peer-reviewed
+    ├── Constraint: 2-hour time box
+    ├── SubGoal [0] search papers     completed
+    │     └── Action → Outcome success
+    └── SubGoal [1] summarize…        active  ← next</div>
+        </div>
+        <div class="card">
+          <h3>Expected next step (SPARQL)</h3>
+<pre>SELECT ?step ?desc WHERE {
+  ?sg a agsmo:SubGoal ;
+      agsmo:status "active" ;
+      agsmo:stepIndex ?step ;
+      agsmo:description ?desc .
+}
+ORDER BY ?step LIMIT 1
+
+# → 1 | Summarize key architectures…</pre>
+        </div>
+      </div>
+      <div class="callout ok">
+        <strong>You should observe</strong>
+        Next open step index <strong>1</strong>; root <code>active</code>; 1 of 2 subgoals completed; search rationale mentions peer-reviewed / seed set.
+      </div>
+      <a class="file-link" href="../examples/04_literature_review_full.ttl">Open 04_literature_review_full.ttl</a>
+    </section>
+
+    <!-- 05 -->
+    <section class="lesson" id="lesson-05">
+      <h2><span class="badge bad">05</span> Failure and roll-up</h2>
+      <p class="learn">Not only happy paths: a failed step with no open work left → root plan <code>failed</code>.</p>
+      <div class="steps">
+        <span>01 minimal</span><span>02 plan</span><span>03 action</span><span>04 full</span><span class="here">05 failure</span>
+      </div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>Story</h3>
+          <p>CI deploys staging (ok), then e2e fails. Plan root is marked failed.</p>
+          <div class="diagram">Goal: Run integration on staging   status=failed
+├── SubGoal [0] Deploy staging    completed  success
+└── SubGoal [1] Run e2e           failed     success=false</div>
+        </div>
+        <div class="card">
+          <h3>Contrast with lesson 04</h3>
+          <p>In 04 the root stays <code>active</code> because step 1 is still open. Here both steps are terminal and one failed → root <code>failed</code>.</p>
+<pre>agsmo:goal-fragile agsmo:status "failed" .
+agsmo:outcome-e2e-fail agsmo:success false .</pre>
+        </div>
+      </div>
+      <div class="callout bad">
+        <strong>You should observe</strong>
+        Root status <code>failed</code>; step 0 completed; step 1 failed; at least one Outcome with <code>success false</code>.
+      </div>
+      <a class="file-link" href="../examples/05_failure_and_rollup.ttl">Open 05_failure_and_rollup.ttl</a>
+    </section>
+
+    <!-- Try -->
+    <section class="lesson" id="try">
+      <h2>Try it (Python)</h2>
+      <p class="learn">Always parse the ontology first, then an example file.</p>
+<pre>from rdflib import Graph
+
+g = Graph()
+g.parse("ontology/agsmo.ttl", format="turtle")
+g.parse("examples/04_literature_review_full.ttl", format="turtle")
+
+q = """
+PREFIX agsmo: &lt;https://w3id.org/agsmo/ns#&gt;
+SELECT ?step ?desc WHERE {
+  ?sg a agsmo:SubGoal ;
+      agsmo:status "active" ;
+      agsmo:stepIndex ?step ;
+      agsmo:description ?desc .
+}
+ORDER BY ?step
+LIMIT 1
+"""
+for row in g.query(q):
+    print(int(row.step), row.desc)
+# Expected: 1 Summarize key architectures and trade-offs</pre>
+      <p style="margin-top:1rem;color:var(--muted)">More queries: <a href="../examples/queries.sparql">examples/queries.sparql</a></p>
+    </section>
+
+    <section class="lesson" id="ci">
+      <h2>Contract tests</h2>
+      <p class="learn">These lessons are executable. CI runs them before publishing this site.</p>
+<pre>pip install -r requirements-dev.txt
+pytest -q</pre>
+      <p style="margin-top:0.75rem;color:var(--muted)">
+        If an example stops matching its SPARQL contracts, GitHub Actions fails and docs are not redeployed.
+        See <a href="https://github.com/sadnanalmanir/agsmo/blob/main/tests/test_examples.py">tests/test_examples.py</a>.
+      </p>
+    </section>
+
+    <footer>
+      <p>
+        <strong>AGSMO</strong> — Agent Semantic Memory Ontology ·
+        <a href="./">Specification (WIDOCO)</a> ·
+        <a href="https://github.com/sadnanalmanir/agsmo">Source</a> ·
+        MIT License
+      </p>
+      <p>
+        Tutorial page is static HTML maintained in
+        <code>docs/tutorial.html</code> and published with GitHub Pages.
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

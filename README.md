@@ -101,9 +101,12 @@ Human-readable docs are generated automatically with **[WIDOCO](https://github.c
 
 | | |
 |--|--|
-| **Site** | https://sadnanalmanir.github.io/agsmo/ |
+| **Start here (tutorial)** | https://sadnanalmanir.github.io/agsmo/tutorial/ |
+| **Ontology specification** | https://sadnanalmanir.github.io/agsmo/ |
 | **Workflow** | [`.github/workflows/publish-docs.yml`](.github/workflows/publish-docs.yml) |
 | **How it works** | [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) |
+
+The progressive HTML tutorial is maintained as [`docs/tutorial.html`](docs/tutorial.html) and published to `/tutorial/`.
 
 **One-time:** Repo **Settings → Pages → Source = GitHub Actions**, then wait for the workflow (or run it manually under **Actions**).
 
