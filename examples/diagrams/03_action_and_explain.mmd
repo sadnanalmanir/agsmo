@@ -1,0 +1,7 @@
+%% Lesson 03 — Action, outcome, explain
+flowchart TB
+  SG["SubGoal 0<br/>Write core memory API<br/><b>completed</b>"]
+  ACT["Action + prov:Activity<br/>Implemented create_plan / progress<br/><i>rationale: offline tests; small API…</i><br/>performedBy → Agent"]
+  OUT["Outcome<br/>Unit tests green<br/><b>success: true</b>"]
+  SG -->|achievedBy| ACT
+  ACT -->|hasOutcome| OUT

@@ -1,0 +1,13 @@
+%% Lesson 02 — Plan with constraints
+flowchart TB
+  R["Goal plan root<br/>Ship MVP<br/><b>status: active</b>"]
+  C1["Constraint<br/>offline-capable"]
+  C2["Constraint<br/>small public API"]
+  S0["SubGoal 0<br/>Write core API<br/><b>active · next</b>"]
+  S1["SubGoal 1<br/>Add unit tests<br/>active"]
+  S2["SubGoal 2<br/>Publish docs<br/>active"]
+  R --> C1
+  R --> C2
+  R --> S0
+  R --> S1
+  R --> S2

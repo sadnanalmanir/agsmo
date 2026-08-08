@@ -1,0 +1,15 @@
+%% Lesson 04 — Full happy path
+flowchart TB
+  EP["Episode<br/>literature demo"]
+  ROOT["Goal plan root<br/>Literature review<br/><b>status: active · 1/2 done</b>"]
+  C1["Constraint<br/>peer-reviewed sources"]
+  C2["Constraint<br/>finish within 2 hours"]
+  S0["SubGoal 0<br/>Search papers<br/><b>completed</b>"]
+  S1["SubGoal 1<br/>Summarize trade-offs<br/><b>active · next</b>"]
+  ACT["Action → Outcome ✓<br/>Queried indexes<br/><i>rationale: seed set; peer-reviewed…</i><br/>12 candidates; 5 relevant"]
+  EP --> ROOT
+  ROOT --> C1
+  ROOT --> C2
+  ROOT --> S0
+  ROOT --> S1
+  S0 --> ACT

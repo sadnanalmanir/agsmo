@@ -103,7 +103,7 @@ Human-readable docs are generated automatically with **[WIDOCO](https://github.c
 | | |
 |--|--|
 | **Start here (tutorial)** | https://sadnanalmanir.github.io/agsmo/tutorial/ |
-| **Per-example diagrams** | [`examples/diagrams/`](examples/diagrams/) (SVG; embedded in tutorial) |
+| **Per-example diagrams** | [`examples/diagrams/`](examples/diagrams/) (Mermaid `.mmd`; rendered in tutorial) |
 | **Ontology specification** | https://sadnanalmanir.github.io/agsmo/ |
 | **Workflow** | [`.github/workflows/publish-docs.yml`](.github/workflows/publish-docs.yml) |
 | **How it works** | [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) |

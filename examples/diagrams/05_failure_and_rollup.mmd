@@ -1,0 +1,11 @@
+%% Lesson 05 — Failure and roll-up
+flowchart TB
+  ROOT["Goal plan root<br/>Run integration on staging<br/><b>status: FAILED</b>"]
+  S0["SubGoal 0<br/>Deploy staging<br/><b>completed</b>"]
+  S1["SubGoal 1<br/>Run e2e<br/><b>failed</b>"]
+  O0["Outcome ✓<br/>Staging healthy<br/>success: true"]
+  O1["Outcome ✗<br/>3 tests failed<br/>success: false"]
+  ROOT --> S0
+  ROOT --> S1
+  S0 --> O0
+  S1 --> O1
