@@ -183,6 +183,24 @@
       padding: 0.9rem 1rem;
       color: var(--text);
     }
+    figure.diagram-fig {
+      margin: 0.75rem 0 0;
+      padding: 0.75rem;
+      background: #0b1016;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-align: center;
+    }
+    figure.diagram-fig img {
+      max-width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    figure.diagram-fig figcaption {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
     .callout {
       border-left: 4px solid var(--accent);
       background: var(--panel-2);
@@ -281,7 +299,7 @@
 
     <section class="model" id="model">
       <h2>Mental model</h2>
-      <p class="learn">One picture for all lessons. A <em>plan</em> is a root <strong>Goal</strong> with ordered <strong>SubGoals</strong> — there is no separate Plan class.</p>
+      <p class="learn">One picture for all lessons. A <em>plan</em> is a root <strong>Goal</strong> with ordered <strong>SubGoals</strong> — there is no separate Plan class. Each lesson below also has its own instance diagram.</p>
       <div class="diagram">Agent ──performedBy──► Action ──hasOutcome──► Outcome
                            ▲
                            │ achievedBy
@@ -303,13 +321,14 @@ Episode ◄──partOf── Goal/SubGoal ──hasConstraint──► Constrai
       <div class="steps">
         <span class="here">01 minimal</span><span>02 plan</span><span>03 action</span><span>04 full</span><span>05 failure</span>
       </div>
+      <figure class="diagram-fig">
+        <img src="../examples/diagrams/01_minimal_goal.svg" width="520" height="200" alt="Diagram: Agent pursues one active Goal (write abstract)" />
+        <figcaption>Instance diagram — smallest useful AGSMO graph</figcaption>
+      </figure>
       <div class="grid-2" style="margin-top:1rem">
         <div class="card">
           <h3>Story</h3>
           <p>Alice’s assistant commits to writing a short abstract. Status stays <code>active</code> until work is recorded later.</p>
-          <div class="diagram">Agent: Alice's research assistant
-└── Goal: Write a 150-word abstract
-      status = active</div>
         </div>
         <div class="card">
           <h3>Key triples</h3>
@@ -326,6 +345,7 @@ agsmo:goal-write-abstract a agsmo:Goal ;
         Exactly one Goal; status <code>active</code>; zero Actions.
       </div>
       <a class="file-link" href="../examples/01_minimal_goal.ttl">Open 01_minimal_goal.ttl</a>
+      · <a class="file-link" href="../examples/diagrams/01_minimal_goal.svg">SVG</a>
     </section>
 
     <!-- 02 -->
@@ -375,14 +395,14 @@ agsmo:goal-write-api a agsmo:SubGoal ;
       <div class="steps">
         <span>01 minimal</span><span>02 plan</span><span class="here">03 action</span><span>04 full</span><span>05 failure</span>
       </div>
+      <figure class="diagram-fig">
+        <img src="../examples/diagrams/03_action_and_explain.svg" width="620" height="320" alt="Diagram: SubGoal achieved by Action with rationale and successful Outcome" />
+        <figcaption>Instance diagram — Action + rationale + Outcome (explainability)</figcaption>
+      </figure>
       <div class="grid-2" style="margin-top:1rem">
         <div class="card">
           <h3>Story</h3>
           <p>The agent implements plan APIs offline-first, records why, and marks the step completed via a successful outcome.</p>
-          <div class="diagram">SubGoal [0] Write core memory API   completed
-└── Action: Implemented create_plan…
-      rationale: offline tests; small API…
-      └── Outcome: tests green   success=true</div>
         </div>
         <div class="card">
           <h3>Key triples</h3>
@@ -404,6 +424,7 @@ agsmo:outcome-api-green a agsmo:Outcome , prov:Entity ;
         This is how “Why did you do X?” is answered from the graph.
       </div>
       <a class="file-link" href="../examples/03_action_and_explain.ttl">Open 03_action_and_explain.ttl</a>
+      · <a class="file-link" href="../examples/diagrams/03_action_and_explain.svg">SVG</a>
     </section>
 
     <!-- 04 -->

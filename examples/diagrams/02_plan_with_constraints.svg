@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-labelledby="t2 d2">
+  <title id="t2">Lesson 02 — Plan with constraints</title>
+  <desc id="d2">Root goal with two constraints and three ordered subgoals; next step is index 0.</desc>
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b9fd4"/>
+    </marker>
+    <style>
+      .box { fill: #1a2332; stroke: #5b9fd4; stroke-width: 2; rx: 8; }
+      .box-c { fill: #1a2332; stroke: #e8b86d; stroke-width: 2; rx: 8; }
+      .box-n { fill: #243044; stroke: #7dcea0; stroke-width: 2.5; rx: 8; }
+      .box-s { fill: #1a2332; stroke: #5b9fd4; stroke-width: 2; rx: 8; }
+      .title { fill: #5b9fd4; font: 700 11px system-ui, sans-serif; }
+      .title-c { fill: #e8b86d; font: 700 11px system-ui, sans-serif; }
+      .title-n { fill: #7dcea0; font: 700 11px system-ui, sans-serif; }
+      .body { fill: #e7ecf3; font: 600 12px system-ui, sans-serif; }
+      .meta { fill: #9aa8bc; font: 11px system-ui, sans-serif; }
+      .edge { stroke: #5b9fd4; stroke-width: 1.8; fill: none; marker-end: url(#arrow2); }
+      .edge-c { stroke: #e8b86d; stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+      .badge { fill: #7dcea0; font: 700 10px system-ui, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="box" x="200" y="20" width="240" height="70"/>
+  <text class="title" x="320" y="42" text-anchor="middle">Goal (plan root)</text>
+  <text class="body" x="320" y="62" text-anchor="middle">Ship MVP</text>
+  <text class="meta" x="320" y="78" text-anchor="middle">status: active</text>
+
+  <!-- constraints -->
+  <path class="edge-c" d="M 220 90 V 120 H 90 V 145"/>
+  <path class="edge-c" d="M 420 90 V 120 H 550 V 145"/>
+  <rect class="box-c" x="20" y="145" width="140" height="55"/>
+  <text class="title-c" x="90" y="168" text-anchor="middle">Constraint</text>
+  <text class="body" x="90" y="186" text-anchor="middle">offline-capable</text>
+  <rect class="box-c" x="480" y="145" width="140" height="55"/>
+  <text class="title-c" x="550" y="168" text-anchor="middle">Constraint</text>
+  <text class="body" x="550" y="186" text-anchor="middle">small public API</text>
+
+  <!-- subgoals -->
+  <path class="edge" d="M 260 90 V 220"/>
+  <path class="edge" d="M 320 90 V 220"/>
+  <path class="edge" d="M 380 90 V 220"/>
+
+  <rect class="box-n" x="40" y="230" width="160" height="80"/>
+  <text class="title-n" x="120" y="252" text-anchor="middle">SubGoal [0]</text>
+  <text class="body" x="120" y="272" text-anchor="middle">Write core API</text>
+  <text class="meta" x="120" y="292" text-anchor="middle">active · next step</text>
+  <text class="badge" x="120" y="308" text-anchor="middle">← open first</text>
+
+  <rect class="box-s" x="240" y="230" width="160" height="70"/>
+  <text class="title" x="320" y="255" text-anchor="middle">SubGoal [1]</text>
+  <text class="body" x="320" y="275" text-anchor="middle">Add unit tests</text>
+  <text class="meta" x="320" y="292" text-anchor="middle">active</text>
+
+  <rect class="box-s" x="440" y="230" width="160" height="70"/>
+  <text class="title" x="520" y="255" text-anchor="middle">SubGoal [2]</text>
+  <text class="body" x="520" y="275" text-anchor="middle">Publish docs</text>
+  <text class="meta" x="520" y="292" text-anchor="middle">active</text>
+</svg>

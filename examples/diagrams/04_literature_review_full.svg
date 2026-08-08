@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 400" role="img" aria-labelledby="t4 d4">
+  <title id="t4">Lesson 04 — Full happy path literature review</title>
+  <desc id="d4">Episode, plan with constraints, completed search step and open summarize step.</desc>
+  <defs>
+    <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5b9fd4"/>
+    </marker>
+    <style>
+      .box { fill: #1a2332; stroke: #5b9fd4; stroke-width: 2; rx: 8; }
+      .box-ep { fill: #1a2332; stroke: #9aa8bc; stroke-width: 2; rx: 8; }
+      .box-c { fill: #1a2332; stroke: #e8b86d; stroke-width: 1.8; rx: 8; }
+      .box-done { fill: #1a2332; stroke: #7dcea0; stroke-width: 2; rx: 8; }
+      .box-next { fill: #243044; stroke: #7dcea0; stroke-width: 2.5; rx: 8; }
+      .box-act { fill: #243044; stroke: #5b9fd4; stroke-width: 1.8; rx: 8; }
+      .title { fill: #5b9fd4; font: 700 11px system-ui, sans-serif; }
+      .title-c { fill: #e8b86d; font: 700 10px system-ui, sans-serif; }
+      .title-ok { fill: #7dcea0; font: 700 11px system-ui, sans-serif; }
+      .body { fill: #e7ecf3; font: 600 12px system-ui, sans-serif; }
+      .meta { fill: #9aa8bc; font: 10px system-ui, sans-serif; }
+      .edge { stroke: #5b9fd4; stroke-width: 1.6; fill: none; marker-end: url(#arrow4); }
+      .lbl { fill: #9aa8bc; font: 10px system-ui, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="box-ep" x="220" y="10" width="240" height="48"/>
+  <text class="title" x="340" y="30" text-anchor="middle" style="fill:#9aa8bc">Episode</text>
+  <text class="body" x="340" y="48" text-anchor="middle">literature demo</text>
+
+  <path class="edge" d="M 340 58 V 78"/>
+
+  <rect class="box" x="200" y="80" width="280" height="58"/>
+  <text class="title" x="340" y="100" text-anchor="middle">Goal (plan root)</text>
+  <text class="body" x="340" y="118" text-anchor="middle">Literature review — agentic memory</text>
+  <text class="meta" x="340" y="132" text-anchor="middle">status: active · 1 of 2 steps done</text>
+
+  <!-- constraints -->
+  <path class="edge" d="M 240 138 V 160 H 100 V 175" style="marker-end:none"/>
+  <path class="edge" d="M 440 138 V 160 H 580 V 175" style="marker-end:none"/>
+  <rect class="box-c" x="20" y="175" width="160" height="42"/>
+  <text class="title-c" x="100" y="192" text-anchor="middle">Constraint</text>
+  <text class="body" x="100" y="208" text-anchor="middle" style="font-size:11px">peer-reviewed sources</text>
+  <rect class="box-c" x="500" y="175" width="160" height="42"/>
+  <text class="title-c" x="580" y="192" text-anchor="middle">Constraint</text>
+  <text class="body" x="580" y="208" text-anchor="middle" style="font-size:11px">finish within 2 hours</text>
+
+  <!-- subgoals -->
+  <path class="edge" d="M 280 138 V 240"/>
+  <path class="edge" d="M 400 138 V 240"/>
+
+  <rect class="box-done" x="60" y="245" width="200" height="55"/>
+  <text class="title-ok" x="160" y="266" text-anchor="middle">SubGoal [0] completed</text>
+  <text class="body" x="160" y="286" text-anchor="middle">Search papers</text>
+
+  <rect class="box-next" x="420" y="245" width="200" height="55"/>
+  <text class="title-ok" x="520" y="266" text-anchor="middle">SubGoal [1] active</text>
+  <text class="body" x="520" y="286" text-anchor="middle">Summarize trade-offs</text>
+  <text class="lbl" x="520" y="318" text-anchor="middle">← next open step</text>
+
+  <path class="edge" d="M 160 300 V 325"/>
+  <rect class="box-act" x="40" y="328" width="240" height="58"/>
+  <text class="title" x="160" y="348" text-anchor="middle">Action → Outcome ✓</text>
+  <text class="meta" x="160" y="366" text-anchor="middle">rationale: seed set; peer-reviewed…</text>
+  <text class="meta" x="160" y="380" text-anchor="middle">Found 12 candidates; 5 relevant</text>
+</svg>
