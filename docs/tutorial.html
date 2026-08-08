@@ -54,7 +54,13 @@
       background: linear-gradient(180deg, var(--panel) 0%, var(--bg) 100%);
       padding: 2.5rem 1.25rem 2rem;
     }
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 1.25rem 4rem; }
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+      min-width: 0;
+      overflow-x: clip;
+    }
     .hero .wrap { padding-bottom: 0; }
     .eyebrow {
       display: inline-block;
@@ -111,6 +117,8 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+      min-width: 0;
+      overflow-x: clip;
     }
     section.lesson h2 {
       margin: 0 0 0.35rem;
@@ -143,15 +151,19 @@
       display: grid;
       gap: 1rem;
       grid-template-columns: 1fr;
+      /* Allow children to shrink; otherwise long <pre> lines blow out the page */
+      min-width: 0;
     }
     @media (min-width: 760px) {
-      .grid-2 { grid-template-columns: 1.05fr 0.95fr; }
+      .grid-2 { grid-template-columns: 1fr 1fr; }
     }
     .card {
       background: var(--panel-2);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 1rem 1.1rem;
+      min-width: 0; /* critical for grid + pre overflow */
+      overflow: hidden;
     }
     .card h3 {
       margin: 0 0 0.5rem;
@@ -167,9 +179,18 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 0.9rem 1rem;
-      overflow-x: auto;
       margin: 0;
       line-height: 1.45;
+      max-width: 100%;
+      overflow-x: auto;
+      /* Prefer wrapping long Turtle lines over page-wide scrollbars */
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+    .card pre {
+      font-size: 0.78rem;
     }
     .diagram {
       font-family: var(--mono);
@@ -594,8 +615,10 @@ agsmo:outcome-e2e-fail agsmo:success false .</pre>
         </div>
         <div class="card">
           <h3>02 · Good — linked action</h3>
-<pre>agsmo:goal-search agsmo:achievedBy agsmo:act-search .
-agsmo:act-search agsmo:hasOutcome agsmo:out-search .</pre>
+<pre>agsmo:goal-search
+  agsmo:achievedBy agsmo:act-search .
+agsmo:act-search
+  agsmo:hasOutcome agsmo:out-search .</pre>
           <p class="learn" style="margin:0.5rem 0 0">Planning + explainability stay connected.</p>
         </div>
       </div>
@@ -633,14 +656,16 @@ agsmo:act-search agsmo:hasOutcome agsmo:out-search .</pre>
         <div class="card">
           <h3>05 · Bad — outcome without success</h3>
 <pre>agsmo:out-x a agsmo:Outcome ;
-  agsmo:description "Suite finished with issues" .
+  agsmo:description
+    "Suite finished with issues" .
   # missing success true/false</pre>
           <p class="learn" style="margin:0.5rem 0 0">Cannot filter successes vs failures; SHACL fails.</p>
         </div>
         <div class="card">
           <h3>05 · Good — boolean success</h3>
 <pre>agsmo:out-x a agsmo:Outcome ;
-  agsmo:description "Suite finished with issues" ;
+  agsmo:description
+    "Suite finished with issues" ;
   agsmo:success false .</pre>
         </div>
       </div>
