@@ -355,17 +355,14 @@ agsmo:goal-write-abstract a agsmo:Goal ;
       <div class="steps">
         <span>01 minimal</span><span class="here">02 plan</span><span>03 action</span><span>04 full</span><span>05 failure</span>
       </div>
+      <figure class="diagram-fig">
+        <img src="../examples/diagrams/02_plan_with_constraints.svg" width="640" height="340" alt="Diagram: plan root with constraints and three ordered subgoals" />
+        <figcaption>Instance diagram — plan = root Goal + ordered SubGoals + Constraints</figcaption>
+      </figure>
       <div class="grid-2" style="margin-top:1rem">
         <div class="card">
           <h3>Story</h3>
-          <p>Ship a library release under offline-friendly and small-API constraints. Three ordered steps; all still active.</p>
-          <div class="diagram">Goal (plan): Ship MVP   status=active
-├── Constraint: offline-capable
-├── Constraint: small public API
-├── SubGoal [0] Write core memory API     active
-├── SubGoal [1] Add unit tests            active
-└── SubGoal [2] Publish docs              active
-        ↑ next open step = stepIndex 0</div>
+          <p>Ship a library release under offline-friendly and small-API constraints. Three ordered steps; all still active. Next open step is index <strong>0</strong>.</p>
         </div>
         <div class="card">
           <h3>Key triples</h3>
@@ -386,6 +383,7 @@ agsmo:goal-write-api a agsmo:SubGoal ;
         Three SubGoals with <code>stepIndex</code> 0,1,2; next open step is <strong>0</strong>; root has ≥2 constraints.
       </div>
       <a class="file-link" href="../examples/02_plan_with_constraints.ttl">Open 02_plan_with_constraints.ttl</a>
+      · <a class="file-link" href="../examples/diagrams/02_plan_with_constraints.svg">SVG</a>
     </section>
 
     <!-- 03 -->
@@ -434,17 +432,14 @@ agsmo:outcome-api-green a agsmo:Outcome , prov:Entity ;
       <div class="steps">
         <span>01 minimal</span><span>02 plan</span><span>03 action</span><span class="here">04 full</span><span>05 failure</span>
       </div>
+      <figure class="diagram-fig">
+        <img src="../examples/diagrams/04_literature_review_full.svg" width="680" height="400" alt="Diagram: full literature review plan with one completed step and one open step" />
+        <figcaption>Instance diagram — full happy path (next open step = summarize)</figcaption>
+      </figure>
       <div class="grid-2" style="margin-top:1rem">
         <div class="card">
           <h3>Story</h3>
           <p>Literature review plan. Step 0 (search) is done; step 1 (summarize) is next. Root stays <code>active</code>.</p>
-          <div class="diagram">Episode: literature demo
-└── Goal: literature review   status=active
-    ├── Constraint: peer-reviewed
-    ├── Constraint: 2-hour time box
-    ├── SubGoal [0] search papers     completed
-    │     └── Action → Outcome success
-    └── SubGoal [1] summarize…        active  ← next</div>
         </div>
         <div class="card">
           <h3>Expected next step (SPARQL)</h3>
@@ -464,6 +459,7 @@ ORDER BY ?step LIMIT 1
         Next open step index <strong>1</strong>; root <code>active</code>; 1 of 2 subgoals completed; search rationale mentions peer-reviewed / seed set.
       </div>
       <a class="file-link" href="../examples/04_literature_review_full.ttl">Open 04_literature_review_full.ttl</a>
+      · <a class="file-link" href="../examples/diagrams/04_literature_review_full.svg">SVG</a>
     </section>
 
     <!-- 05 -->
@@ -473,13 +469,14 @@ ORDER BY ?step LIMIT 1
       <div class="steps">
         <span>01 minimal</span><span>02 plan</span><span>03 action</span><span>04 full</span><span class="here">05 failure</span>
       </div>
+      <figure class="diagram-fig">
+        <img src="../examples/diagrams/05_failure_and_rollup.svg" width="640" height="300" alt="Diagram: plan root failed after successful deploy and failed e2e" />
+        <figcaption>Instance diagram — failure path and plan roll-up</figcaption>
+      </figure>
       <div class="grid-2" style="margin-top:1rem">
         <div class="card">
           <h3>Story</h3>
           <p>CI deploys staging (ok), then e2e fails. Plan root is marked failed.</p>
-          <div class="diagram">Goal: Run integration on staging   status=failed
-├── SubGoal [0] Deploy staging    completed  success
-└── SubGoal [1] Run e2e           failed     success=false</div>
         </div>
         <div class="card">
           <h3>Contrast with lesson 04</h3>
@@ -493,6 +490,7 @@ agsmo:outcome-e2e-fail agsmo:success false .</pre>
         Root status <code>failed</code>; step 0 completed; step 1 failed; at least one Outcome with <code>success false</code>.
       </div>
       <a class="file-link" href="../examples/05_failure_and_rollup.ttl">Open 05_failure_and_rollup.ttl</a>
+      · <a class="file-link" href="../examples/diagrams/05_failure_and_rollup.svg">SVG</a>
     </section>
 
     <!-- Try -->
