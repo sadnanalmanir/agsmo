@@ -1,0 +1,22 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+# GOOD: Goal --achievedBy--> Action so explainability and planning stay connected.
+
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+
+agsmo:goal-search a agsmo:Goal ;
+  agsmo:description "Find papers" ;
+  agsmo:status "completed" ;
+  agsmo:achievedBy agsmo:act-search .
+
+agsmo:act-search a agsmo:Action , prov:Activity ;
+  agsmo:description "Queried the index" ;
+  agsmo:rationale "Need candidates" ;
+  agsmo:performedBy agsmo:agent-x ;
+  agsmo:hasOutcome agsmo:out-search .
+
+agsmo:out-search a agsmo:Outcome , prov:Entity ;
+  agsmo:description "Found 5 papers" ;
+  agsmo:success true ;
+  prov:wasGeneratedBy agsmo:act-search .

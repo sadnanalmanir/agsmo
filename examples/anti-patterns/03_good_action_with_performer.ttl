@@ -1,0 +1,11 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+# GOOD: Action names who performed it.
+
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+
+agsmo:act-x a agsmo:Action , prov:Activity ;
+  agsmo:description "Did the work" ;
+  agsmo:performedBy agsmo:agent-x ;
+  prov:wasAssociatedWith agsmo:agent-x .

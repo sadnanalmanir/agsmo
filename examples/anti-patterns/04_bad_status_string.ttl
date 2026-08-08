@@ -1,0 +1,8 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+
+# BAD: Free-text status not in the controlled set — fails GoalShape.
+# Tools looking for "completed" will miss "done".
+
+agsmo:goal-x a agsmo:Goal ;
+  agsmo:description "Finish the draft" ;
+  agsmo:status "done" .

@@ -63,7 +63,7 @@ pip install -r requirements-dev.txt
 pytest -q
 ```
 
-Includes **SPARQL story tests** and **SHACL structural shapes** ([`shapes/`](shapes/)).  
+Includes **SPARQL story tests**, **SHACL structural shapes** ([`shapes/`](shapes/)), and **bad vs good anti-patterns** ([`examples/anti-patterns/`](examples/anti-patterns/)).  
 GitHub Actions runs them **before** regenerating GitHub Pages.
 
 ## SPARQL prefix
@@ -103,6 +103,7 @@ Human-readable docs are generated automatically with **[WIDOCO](https://github.c
 | | |
 |--|--|
 | **Start here (tutorial)** | https://sadnanalmanir.github.io/agsmo/tutorial/ |
+| **Common mistakes** | https://sadnanalmanir.github.io/agsmo/tutorial/#mistakes |
 | **Per-example diagrams** | [`examples/diagrams/`](examples/diagrams/) (Mermaid `.mmd`; rendered in tutorial) |
 | **Ontology specification** | https://sadnanalmanir.github.io/agsmo/ |
 | **Workflow** | [`.github/workflows/publish-docs.yml`](.github/workflows/publish-docs.yml) |

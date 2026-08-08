@@ -1,0 +1,7 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+
+# BAD: Action without performedBy — fails ActionShape (no accountable agent).
+
+agsmo:act-x a agsmo:Action ;
+  agsmo:description "Did the work" .
+  # missing agsmo:performedBy

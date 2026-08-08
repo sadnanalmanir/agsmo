@@ -1,0 +1,7 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+
+# GOOD: Controlled status vocabulary.
+
+agsmo:goal-x a agsmo:Goal ;
+  agsmo:description "Finish the draft" ;
+  agsmo:status "completed" .

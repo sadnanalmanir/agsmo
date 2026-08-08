@@ -294,6 +294,7 @@
         <li><a href="#lesson-03">Lesson 03 — Action, outcome, explain</a></li>
         <li><a href="#lesson-04">Lesson 04 — Full happy path</a></li>
         <li><a href="#lesson-05">Lesson 05 — Failure and roll-up</a></li>
+        <li><a href="#mistakes">Common mistakes (bad vs good)</a></li>
         <li><a href="#try">Try it (Python + SPARQL)</a></li>
         <li><a href="#ci">Contract tests</a></li>
       </ol>
@@ -549,6 +550,106 @@ agsmo:outcome-e2e-fail agsmo:success false .</pre>
       </div>
       <a class="file-link" href="../examples/05_failure_and_rollup.ttl">Open 05_failure_and_rollup.ttl</a>
       · <a class="file-link" href="../examples/diagrams/05_failure_and_rollup.mmd">Mermaid source</a>
+    </section>
+
+
+    <!-- Mistakes -->
+    <section class="lesson" id="mistakes">
+      <h2><span class="badge warn">Anti-patterns</span> Common mistakes (bad vs good)</h2>
+      <p class="learn">
+        Correct AGSMO is easier to learn when you also see what <em>not</em> to do.
+        Each pair below is a small Turtle graph. Most <strong>bad</strong> graphs fail
+        first-cut <a href="https://github.com/sadnanalmanir/agsmo/tree/main/shapes">SHACL</a>;
+        all <strong>good</strong> graphs pass. Full files live under
+        <code>examples/anti-patterns/</code>.
+      </p>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>01 · Bad — no stepIndex</h3>
+<pre>agsmo:step-a a agsmo:SubGoal ;
+  agsmo:description "Design API" ;
+  agsmo:status "active" .
+  # missing stepIndex</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Order of plan steps is undefined; “next open step” is unreliable.</p>
+        </div>
+        <div class="card">
+          <h3>01 · Good — ordered steps</h3>
+<pre>agsmo:step-a a agsmo:SubGoal ;
+  agsmo:description "Design API" ;
+  agsmo:status "active" ;
+  agsmo:stepIndex 0 .</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Stable order for multi-step plans.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>02 · Bad — orphan action</h3>
+<pre>agsmo:act-search a agsmo:Action ;
+  agsmo:description "Queried the index" ;
+  agsmo:performedBy agsmo:agent-x .
+# no Goal --achievedBy--> Action</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Cannot answer “in service of which goal?” (modelling issue; first-cut SHACL may still pass).</p>
+        </div>
+        <div class="card">
+          <h3>02 · Good — linked action</h3>
+<pre>agsmo:goal-search agsmo:achievedBy agsmo:act-search .
+agsmo:act-search agsmo:hasOutcome agsmo:out-search .</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Planning + explainability stay connected.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>03 · Bad — no performer</h3>
+<pre>agsmo:act-x a agsmo:Action ;
+  agsmo:description "Did the work" .
+  # missing performedBy</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Fails SHACL ActionShape; no accountable agent.</p>
+        </div>
+        <div class="card">
+          <h3>03 · Good — performedBy</h3>
+<pre>agsmo:act-x a agsmo:Action ;
+  agsmo:description "Did the work" ;
+  agsmo:performedBy agsmo:agent-x .</pre>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>04 · Bad — free-text status</h3>
+<pre>agsmo:goal-x agsmo:status "done" .</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Not in controlled set; tools looking for <code>completed</code> miss it; SHACL fails.</p>
+        </div>
+        <div class="card">
+          <h3>04 · Good — controlled status</h3>
+<pre>agsmo:goal-x agsmo:status "completed" .</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Use: active · completed · failed · abandoned.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="card">
+          <h3>05 · Bad — outcome without success</h3>
+<pre>agsmo:out-x a agsmo:Outcome ;
+  agsmo:description "Suite finished with issues" .
+  # missing success true/false</pre>
+          <p class="learn" style="margin:0.5rem 0 0">Cannot filter successes vs failures; SHACL fails.</p>
+        </div>
+        <div class="card">
+          <h3>05 · Good — boolean success</h3>
+<pre>agsmo:out-x a agsmo:Outcome ;
+  agsmo:description "Suite finished with issues" ;
+  agsmo:success false .</pre>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:1.25rem">
+        <strong>CI</strong>
+        <code>tests/test_anti_patterns.py</code> ensures bad structural cases fail SHACL and good pairs pass.
+        Files: <a href="../examples/anti-patterns/">examples/anti-patterns/</a>
+      </div>
     </section>
 
     <!-- Try -->

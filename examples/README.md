@@ -112,6 +112,10 @@ Every class and property in `ontology/agsmo.ttl` also has:
 
 Those appear under each term on the [WIDOCO HTML docs](https://sadnanalmanir.github.io/agsmo/).
 
+## Anti-patterns (bad vs good)
+
+See [`anti-patterns/`](anti-patterns/) for paired mistakes and corrections (stepIndex, orphan actions, status strings, …). Covered in the tutorial under [Common mistakes](https://sadnanalmanir.github.io/agsmo/tutorial/#mistakes).
+
 ## Contract tests (CI)
 
 The stories above are enforced by automated tests:
@@ -125,5 +129,6 @@ pytest -q
 |-------|--------|
 | `tests/test_examples.py` | SPARQL story contracts (next step, failure roll-up, …) |
 | `tests/test_shacl.py` | SHACL structure ([`shapes/agsmo-shapes.ttl`](../shapes/agsmo-shapes.ttl)) |
+| `tests/test_anti_patterns.py` | Bad graphs fail SHACL where expected; good pairs pass |
 
 On GitHub, `pytest` runs before WIDOCO/Pages deploy. If an example breaks its story **or** its structure, the build fails.

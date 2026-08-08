@@ -1,0 +1,20 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+
+# GOOD: SubGoals carry 0-based stepIndex for stable plan order.
+
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+
+agsmo:plan-x a agsmo:Goal ;
+  agsmo:description "Ship feature" ;
+  agsmo:status "active" ;
+  agsmo:hasSubGoal agsmo:step-a , agsmo:step-b .
+
+agsmo:step-a a agsmo:SubGoal ;
+  agsmo:description "Design API" ;
+  agsmo:status "active" ;
+  agsmo:stepIndex 0 .
+
+agsmo:step-b a agsmo:SubGoal ;
+  agsmo:description "Implement API" ;
+  agsmo:status "active" ;
+  agsmo:stepIndex 1 .

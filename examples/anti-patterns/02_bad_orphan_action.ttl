@@ -1,0 +1,18 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+# BAD: Action is well-formed for SHACL (has performer) but not linked to any Goal.
+# You cannot answer "in service of which goal?" — planning provenance is broken.
+# (SHACL first-cut may still pass; story/documentation treats this as an anti-pattern.)
+
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+
+agsmo:goal-search a agsmo:Goal ;
+  agsmo:description "Find papers" ;
+  agsmo:status "active" .
+
+agsmo:act-search a agsmo:Action , prov:Activity ;
+  agsmo:description "Queried the index" ;
+  agsmo:rationale "Need candidates" ;
+  agsmo:performedBy agsmo:agent-x .
+  # missing: goal-search agsmo:achievedBy act-search
