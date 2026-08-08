@@ -28,6 +28,7 @@ PAIRS = [
     ("03_bad_action_no_performer.ttl", "03_good_action_with_performer.ttl", True),
     ("04_bad_status_string.ttl", "04_good_status_string.ttl", True),
     ("05_bad_outcome_no_success.ttl", "05_good_outcome_with_success.ttl", True),
+    ("06_bad_one_sided_link.ttl", "06_good_dual_edges.ttl", True),
 ]
 
 

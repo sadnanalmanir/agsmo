@@ -66,3 +66,31 @@ PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 #   ?a agsmo:hasOutcome ?o ;
 #      agsmo:description ?action .
 # }
+
+# -----------------------------------------------------------------------------
+# Q6 — Parent of a subgoal via inverse (use with 02 or 04; AGSMO 0.2)
+# -----------------------------------------------------------------------------
+# SELECT ?childDesc ?parentDesc WHERE {
+#   ?child agsmo:subGoalOf ?parent ;
+#          agsmo:description ?childDesc .
+#   ?parent agsmo:description ?parentDesc .
+# }
+
+# -----------------------------------------------------------------------------
+# Q7 — Goals an action achieves via inverse (use with 03 or 04)
+# -----------------------------------------------------------------------------
+# SELECT ?actionDesc ?goalDesc WHERE {
+#   ?a a agsmo:Action ;
+#      agsmo:description ?actionDesc ;
+#      agsmo:achieves ?g .
+#   ?g agsmo:description ?goalDesc .
+# }
+
+# -----------------------------------------------------------------------------
+# Q8 — Episode membership via includes (use with 02 or 04)
+# -----------------------------------------------------------------------------
+# SELECT ?memberDesc WHERE {
+#   ?ep a agsmo:Episode ;
+#       agsmo:includes ?m .
+#   ?m agsmo:description ?memberDesc .
+# }

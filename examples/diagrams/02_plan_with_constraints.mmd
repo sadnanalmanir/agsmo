@@ -1,4 +1,4 @@
-%% Lesson 02 — Plan with constraints
+%% Lesson 02 — Plan with constraints (dual edges)
 flowchart TB
   R["Goal plan root<br/>Ship MVP<br/><b>status: active</b>"]
   C1["Constraint<br/>offline-capable"]
@@ -6,8 +6,13 @@ flowchart TB
   S0["SubGoal 0<br/>Write core API<br/><b>active · next</b>"]
   S1["SubGoal 1<br/>Add unit tests<br/>active"]
   S2["SubGoal 2<br/>Publish docs<br/>active"]
-  R --> C1
-  R --> C2
-  R --> S0
-  R --> S1
-  R --> S2
+  R -->|hasConstraint| C1
+  C1 -->|constrains| R
+  R -->|hasConstraint| C2
+  C2 -->|constrains| R
+  R -->|hasSubGoal| S0
+  S0 -->|subGoalOf| R
+  R -->|hasSubGoal| S1
+  S1 -->|subGoalOf| R
+  R -->|hasSubGoal| S2
+  S2 -->|subGoalOf| R

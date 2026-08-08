@@ -6,6 +6,7 @@
 # =============================================================================
 # Teaching goal: a *plan* = root Goal + ordered SubGoals + Constraints.
 # There is no Plan class. stepIndex gives stable order (0, 1, 2, …).
+# AGSMO 0.2: every object link is dual-asserted (forward + inverse).
 # =============================================================================
 
 agsmo:agent-alice a agsmo:Agent ;
@@ -13,13 +14,19 @@ agsmo:agent-alice a agsmo:Agent ;
 
 agsmo:episode-morning a agsmo:Episode ;
     agsmo:description "Morning planning session" ;
-    agsmo:timestamp "2026-08-07T09:00:00Z"^^xsd:dateTime .
+    agsmo:timestamp "2026-08-07T09:00:00Z"^^xsd:dateTime ;
+    agsmo:includes agsmo:goal-ship-mvp ,
+                   agsmo:goal-write-api ,
+                   agsmo:goal-add-tests ,
+                   agsmo:goal-write-docs .
 
 agsmo:constraint-offline a agsmo:Constraint ;
-    agsmo:description "Stay offline-capable (no paid APIs in CI)" .
+    agsmo:description "Stay offline-capable (no paid APIs in CI)" ;
+    agsmo:constrains agsmo:goal-ship-mvp .
 
 agsmo:constraint-small-api a agsmo:Constraint ;
-    agsmo:description "Keep the public API small and documented" .
+    agsmo:description "Keep the public API small and documented" ;
+    agsmo:constrains agsmo:goal-ship-mvp .
 
 # Root plan
 agsmo:goal-ship-mvp a agsmo:Goal ;
@@ -37,19 +44,22 @@ agsmo:goal-write-api a agsmo:SubGoal ;
     agsmo:description "Write core memory API" ;
     agsmo:status "active" ;
     agsmo:stepIndex 0 ;
-    agsmo:partOfEpisode agsmo:episode-morning .
+    agsmo:partOfEpisode agsmo:episode-morning ;
+    agsmo:subGoalOf agsmo:goal-ship-mvp .
 
 agsmo:goal-add-tests a agsmo:SubGoal ;
     agsmo:description "Add unit tests for planning helpers" ;
     agsmo:status "active" ;
     agsmo:stepIndex 1 ;
-    agsmo:partOfEpisode agsmo:episode-morning .
+    agsmo:partOfEpisode agsmo:episode-morning ;
+    agsmo:subGoalOf agsmo:goal-ship-mvp .
 
 agsmo:goal-write-docs a agsmo:SubGoal ;
     agsmo:description "Publish README and ontology docs" ;
     agsmo:status "active" ;
     agsmo:stepIndex 2 ;
-    agsmo:partOfEpisode agsmo:episode-morning .
+    agsmo:partOfEpisode agsmo:episode-morning ;
+    agsmo:subGoalOf agsmo:goal-ship-mvp .
 
 # Progress: 0/3 done. Next open step = write-api (stepIndex 0).
 # Next: 03_action_and_explain.ttl
