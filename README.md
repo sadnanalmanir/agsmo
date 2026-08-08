@@ -63,7 +63,8 @@ pip install -r requirements-dev.txt
 pytest -q
 ```
 
-GitHub Actions runs these contracts **before** regenerating GitHub Pages.
+Includes **SPARQL story tests** and **SHACL structural shapes** ([`shapes/`](shapes/)).  
+GitHub Actions runs them **before** regenerating GitHub Pages.
 
 ## SPARQL prefix
 

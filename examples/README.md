@@ -121,4 +121,9 @@ pip install -r requirements-dev.txt
 pytest -q
 ```
 
-On GitHub, `pytest` runs before WIDOCO/Pages deploy. If an example stops matching its SPARQL contracts, the build fails.
+| Suite | Checks |
+|-------|--------|
+| `tests/test_examples.py` | SPARQL story contracts (next step, failure roll-up, …) |
+| `tests/test_shacl.py` | SHACL structure ([`shapes/agsmo-shapes.ttl`](../shapes/agsmo-shapes.ttl)) |
+
+On GitHub, `pytest` runs before WIDOCO/Pages deploy. If an example breaks its story **or** its structure, the build fails.

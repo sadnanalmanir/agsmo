@@ -1,0 +1,242 @@
+@prefix agsmo: <https://w3id.org/agsmo/ns#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+################################################################################
+# AGSMO instance shapes — first cut (v0.1)
+#
+# Goal: structural rules for "good" AGSMO usage graphs.
+# Strict enough for progressive examples 01–05 and typical library writes;
+# not so strict that demos need every optional field.
+#
+# Validate with:
+#   pyshacl -s shapes/agsmo-shapes.ttl -d ontology/agsmo.ttl -d examples/0N_….ttl
+# or: pytest tests/test_shacl.py
+################################################################################
+
+<> a owl:Ontology ;
+  rdfs:label "AGSMO instance shapes (first cut)"@en ;
+  dcterms:description "SHACL NodeShapes for validating AGSMO ABox / usage graphs."@en ;
+  dcterms:creator "Sadnan Al Manir" ;
+  owl:versionInfo "0.1.0-first-cut" .
+
+# ---------------------------------------------------------------------------
+# Agent
+# ---------------------------------------------------------------------------
+
+agsmo:AgentShape a sh:NodeShape ;
+  sh:targetClass agsmo:Agent ;
+  sh:name "Agent" ;
+  sh:description "An agent should be identifiable by a human-readable description."@en ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Agent must have exactly one non-empty agsmo:description."@en ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# Goal (includes SubGoal via RDFS inference when enabled)
+# ---------------------------------------------------------------------------
+
+agsmo:GoalShape a sh:NodeShape ;
+  sh:targetClass agsmo:Goal ;
+  sh:name "Goal" ;
+  sh:description "Goals need a description and a controlled lifecycle status."@en ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Goal must have exactly one non-empty agsmo:description."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:status ;
+    sh:name "status" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:in ( "active" "completed" "failed" "abandoned" ) ;
+    sh:message "agsmo:Goal status must be one of: active, completed, failed, abandoned."@en ;
+  ] ;
+  # Optional: constraints, subgoals, episode, timestamp — not required
+  sh:property [
+    sh:path agsmo:hasConstraint ;
+    sh:name "hasConstraint" ;
+    sh:class agsmo:Constraint ;
+    sh:message "agsmo:hasConstraint must point to an agsmo:Constraint."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:hasSubGoal ;
+    sh:name "hasSubGoal" ;
+    sh:class agsmo:Goal ;
+    sh:message "agsmo:hasSubGoal must point to an agsmo:Goal (typically SubGoal)."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:achievedBy ;
+    sh:name "achievedBy" ;
+    sh:class agsmo:Action ;
+    sh:message "agsmo:achievedBy must point to an agsmo:Action."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:partOfEpisode ;
+    sh:name "partOfEpisode" ;
+    sh:class agsmo:Episode ;
+    sh:maxCount 1 ;
+    sh:message "agsmo:partOfEpisode must point to an agsmo:Episode."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:timestamp ;
+    sh:name "timestamp" ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+    sh:message "agsmo:timestamp must be a single xsd:dateTime."@en ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# SubGoal — plan steps need a stable order
+# ---------------------------------------------------------------------------
+
+agsmo:SubGoalShape a sh:NodeShape ;
+  sh:targetClass agsmo:SubGoal ;
+  sh:name "SubGoal" ;
+  sh:description "SubGoals used as plan steps should carry a 0-based stepIndex."@en ;
+  sh:property [
+    sh:path agsmo:stepIndex ;
+    sh:name "stepIndex" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:integer ;
+    sh:minInclusive 0 ;
+    sh:message "agsmo:SubGoal must have exactly one non-negative agsmo:stepIndex."@en ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# Constraint
+# ---------------------------------------------------------------------------
+
+agsmo:ConstraintShape a sh:NodeShape ;
+  sh:targetClass agsmo:Constraint ;
+  sh:name "Constraint" ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Constraint must have exactly one non-empty agsmo:description."@en ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# Action — who did what (rationale recommended but optional for first cut)
+# ---------------------------------------------------------------------------
+
+agsmo:ActionShape a sh:NodeShape ;
+  sh:targetClass agsmo:Action ;
+  sh:name "Action" ;
+  sh:description "Actions must describe the work and who performed it. Rationale is recommended for explainability but optional."@en ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Action must have exactly one non-empty agsmo:description."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:performedBy ;
+    sh:name "performedBy" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class agsmo:Agent ;
+    sh:message "agsmo:Action must be performedBy exactly one agsmo:Agent."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:rationale ;
+    sh:name "rationale" ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "agsmo:rationale must be a single string when present."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:hasOutcome ;
+    sh:name "hasOutcome" ;
+    sh:class agsmo:Outcome ;
+    sh:message "agsmo:hasOutcome must point to an agsmo:Outcome."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:partOfEpisode ;
+    sh:name "partOfEpisode" ;
+    sh:class agsmo:Episode ;
+    sh:maxCount 1 ;
+  ] ;
+  sh:property [
+    sh:path agsmo:timestamp ;
+    sh:name "timestamp" ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# Outcome
+# ---------------------------------------------------------------------------
+
+agsmo:OutcomeShape a sh:NodeShape ;
+  sh:targetClass agsmo:Outcome ;
+  sh:name "Outcome" ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Outcome must have exactly one non-empty agsmo:description."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:success ;
+    sh:name "success" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:message "agsmo:Outcome must have exactly one boolean agsmo:success."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:timestamp ;
+    sh:name "timestamp" ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] .
+
+# ---------------------------------------------------------------------------
+# Episode
+# ---------------------------------------------------------------------------
+
+agsmo:EpisodeShape a sh:NodeShape ;
+  sh:targetClass agsmo:Episode ;
+  sh:name "Episode" ;
+  sh:property [
+    sh:path agsmo:description ;
+    sh:name "description" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "agsmo:Episode must have exactly one non-empty agsmo:description."@en ;
+  ] ;
+  sh:property [
+    sh:path agsmo:timestamp ;
+    sh:name "timestamp" ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] .

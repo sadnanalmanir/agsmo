@@ -11,6 +11,7 @@ on:
     paths:
       - "ontology/**"
       - "examples/**"
+      - "shapes/**"
       - "docs/**"
       - "tests/**"
       - "requirements-dev.txt"
@@ -22,6 +23,7 @@ on:
     paths:
       - "ontology/**"
       - "examples/**"
+      - "shapes/**"
       - "docs/**"
       - "tests/**"
       - "requirements-dev.txt"
