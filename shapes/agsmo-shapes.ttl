@@ -6,11 +6,12 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 ################################################################################
-# AGSMO instance shapes — first cut (v0.1)
+# AGSMO instance shapes — v0.2 (required dual edges)
 #
 # Goal: structural rules for "good" AGSMO usage graphs.
-# Strict enough for progressive examples 01–05 and typical library writes;
-# not so strict that demos need every optional field.
+# AGSMO 0.2 writer contract: when a forward object property is asserted,
+# the inverse triple MUST also be present (RDFLib does not materialize
+# owl:inverseOf). Enforced via SPARQL constraints below.
 #
 # Validate with:
 #   pyshacl -s shapes/agsmo-shapes.ttl -d ontology/agsmo.ttl -d examples/0N_….ttl
@@ -18,10 +19,10 @@
 ################################################################################
 
 <> a owl:Ontology ;
-  rdfs:label "AGSMO instance shapes (first cut)"@en ;
-  dcterms:description "SHACL NodeShapes for validating AGSMO ABox / usage graphs."@en ;
+  rdfs:label "AGSMO instance shapes (v0.2 dual edges)"@en ;
+  dcterms:description "SHACL NodeShapes for validating AGSMO ABox / usage graphs, including required inverse triples."@en ;
   dcterms:creator "Sadnan Al Manir" ;
-  owl:versionInfo "0.1.0-first-cut" .
+  owl:versionInfo "0.2.0" .
 
 # ---------------------------------------------------------------------------
 # Agent
@@ -67,7 +68,6 @@ agsmo:GoalShape a sh:NodeShape ;
     sh:in ( "active" "completed" "failed" "abandoned" ) ;
     sh:message "agsmo:Goal status must be one of: active, completed, failed, abandoned."@en ;
   ] ;
-  # Optional: constraints, subgoals, episode, timestamp — not required
   sh:property [
     sh:path agsmo:hasConstraint ;
     sh:name "hasConstraint" ;
@@ -137,7 +137,7 @@ agsmo:ConstraintShape a sh:NodeShape ;
   ] .
 
 # ---------------------------------------------------------------------------
-# Action — who did what (rationale recommended but optional for first cut)
+# Action
 # ---------------------------------------------------------------------------
 
 agsmo:ActionShape a sh:NodeShape ;
@@ -239,4 +239,94 @@ agsmo:EpisodeShape a sh:NodeShape ;
     sh:name "timestamp" ;
     sh:maxCount 1 ;
     sh:datatype xsd:dateTime ;
+  ] .
+
+# ===========================================================================
+# Dual-edge constraints (AGSMO 0.2 writer contract)
+# If the forward edge exists, the inverse triple MUST exist (and vice versa
+# for the pairs we care about when the forward is the usual write direction).
+# ===========================================================================
+
+agsmo:DualEdgeShape a sh:NodeShape ;
+  sh:targetNode agsmo: ;
+  sh:name "DualEdgeContract" ;
+  sh:description "Global checks that object-property links are asserted in both directions."@en ;
+
+  # hasSubGoal → subGoalOf
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every hasSubGoal link must also assert subGoalOf on the child."@en ;
+    sh:prefixes agsmo: ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?parent ?child WHERE {
+        ?parent agsmo:hasSubGoal ?child .
+        FILTER NOT EXISTS { ?child agsmo:subGoalOf ?parent }
+      }
+    """ ;
+  ] ;
+
+  # hasConstraint → constrains
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every hasConstraint link must also assert constrains on the constraint."@en ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?goal ?c WHERE {
+        ?goal agsmo:hasConstraint ?c .
+        FILTER NOT EXISTS { ?c agsmo:constrains ?goal }
+      }
+    """ ;
+  ] ;
+
+  # achievedBy → achieves
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every achievedBy link must also assert achieves on the action."@en ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?goal ?action WHERE {
+        ?goal agsmo:achievedBy ?action .
+        FILTER NOT EXISTS { ?action agsmo:achieves ?goal }
+      }
+    """ ;
+  ] ;
+
+  # hasOutcome → outcomeOf
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every hasOutcome link must also assert outcomeOf on the outcome."@en ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?action ?outcome WHERE {
+        ?action agsmo:hasOutcome ?outcome .
+        FILTER NOT EXISTS { ?outcome agsmo:outcomeOf ?action }
+      }
+    """ ;
+  ] ;
+
+  # performedBy → performs
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every performedBy link must also assert performs on the agent."@en ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?action ?agent WHERE {
+        ?action agsmo:performedBy ?agent .
+        FILTER NOT EXISTS { ?agent agsmo:performs ?action }
+      }
+    """ ;
+  ] ;
+
+  # partOfEpisode → includes
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:message "AGSMO 0.2: every partOfEpisode link must also assert includes on the episode."@en ;
+    sh:select """
+      PREFIX agsmo: <https://w3id.org/agsmo/ns#>
+      SELECT $this ?member ?episode WHERE {
+        ?member agsmo:partOfEpisode ?episode .
+        FILTER NOT EXISTS { ?episode agsmo:includes ?member }
+      }
+    """ ;
   ] .

@@ -1,7 +1,7 @@
 @prefix agsmo: <https://w3id.org/agsmo/ns#> .
 
 # BAD: SubGoals without stepIndex — order of plan steps is undefined.
-# "Next open step" cannot be computed reliably; fails SubGoalShape.
+# Dual edges present so SHACL failure is specifically missing stepIndex.
 
 agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
 
@@ -12,10 +12,12 @@ agsmo:plan-x a agsmo:Goal ;
 
 agsmo:step-a a agsmo:SubGoal ;
   agsmo:description "Design API" ;
-  agsmo:status "active" .
+  agsmo:status "active" ;
+  agsmo:subGoalOf agsmo:plan-x .
   # missing agsmo:stepIndex
 
 agsmo:step-b a agsmo:SubGoal ;
   agsmo:description "Implement API" ;
-  agsmo:status "active" .
+  agsmo:status "active" ;
+  agsmo:subGoalOf agsmo:plan-x .
   # missing agsmo:stepIndex

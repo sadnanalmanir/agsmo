@@ -6,6 +6,7 @@
 # Example 04 — Full happy path: literature review plan (2 steps, first done)
 # =============================================================================
 # Teaching goal: end-to-end story a newcomer can narrate out loud.
+# AGSMO 0.2: all object links are dual-asserted (forward + inverse).
 #
 # Narrative:
 #   1. Agent opens episode "literature demo"
@@ -18,19 +19,26 @@
 # =============================================================================
 
 agsmo:agent-default a agsmo:Agent , prov:Agent ;
-    agsmo:description "Planning agent used in the offline literature-review demo" .
+    agsmo:description "Planning agent used in the offline literature-review demo" ;
+    agsmo:performs agsmo:action-search .
 
 agsmo:episode-demo-1 a agsmo:Episode ;
     agsmo:description "Offline demo: plan a research literature review" ;
-    agsmo:timestamp "2026-08-07T12:00:00Z"^^xsd:dateTime .
+    agsmo:timestamp "2026-08-07T12:00:00Z"^^xsd:dateTime ;
+    agsmo:includes agsmo:goal-lit-review ,
+                   agsmo:goal-search-papers ,
+                   agsmo:goal-summarize ,
+                   agsmo:action-search .
 
 agsmo:constraint-peer-reviewed a agsmo:Constraint ;
     agsmo:description "Prefer peer-reviewed sources" ;
-    agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime .
+    agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime ;
+    agsmo:constrains agsmo:goal-lit-review .
 
 agsmo:constraint-time-box a agsmo:Constraint ;
     agsmo:description "Finish within 2 hours of agent time" ;
-    agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime .
+    agsmo:timestamp "2026-08-07T12:00:01Z"^^xsd:dateTime ;
+    agsmo:constrains agsmo:goal-lit-review .
 
 agsmo:goal-lit-review a agsmo:Goal ;
     agsmo:description "Complete a literature review on agentic memory systems" ;
@@ -46,6 +54,7 @@ agsmo:goal-search-papers a agsmo:SubGoal ;
     agsmo:stepIndex 0 ;
     agsmo:timestamp "2026-08-07T12:00:03Z"^^xsd:dateTime ;
     agsmo:partOfEpisode agsmo:episode-demo-1 ;
+    agsmo:subGoalOf agsmo:goal-lit-review ;
     agsmo:achievedBy agsmo:action-search .
 
 agsmo:goal-summarize a agsmo:SubGoal ;
@@ -53,13 +62,15 @@ agsmo:goal-summarize a agsmo:SubGoal ;
     agsmo:status "active" ;
     agsmo:stepIndex 1 ;
     agsmo:timestamp "2026-08-07T12:00:03Z"^^xsd:dateTime ;
-    agsmo:partOfEpisode agsmo:episode-demo-1 .
+    agsmo:partOfEpisode agsmo:episode-demo-1 ;
+    agsmo:subGoalOf agsmo:goal-lit-review .
 
 agsmo:action-search a agsmo:Action , prov:Activity ;
     agsmo:description "Queried open indexes for 'semantic memory agents RDF'" ;
     agsmo:rationale "Need a seed set of papers before summarizing architectures; prefer peer-reviewed sources per plan constraints" ;
     agsmo:timestamp "2026-08-07T12:05:00Z"^^xsd:dateTime ;
     agsmo:performedBy agsmo:agent-default ;
+    agsmo:achieves agsmo:goal-search-papers ;
     agsmo:partOfEpisode agsmo:episode-demo-1 ;
     agsmo:hasOutcome agsmo:outcome-search-ok ;
     prov:wasAssociatedWith agsmo:agent-default .
@@ -68,4 +79,5 @@ agsmo:outcome-search-ok a agsmo:Outcome , prov:Entity ;
     agsmo:description "Found 12 candidate papers; 5 highly relevant" ;
     agsmo:success true ;
     agsmo:timestamp "2026-08-07T12:10:00Z"^^xsd:dateTime ;
+    agsmo:outcomeOf agsmo:action-search ;
     prov:wasGeneratedBy agsmo:action-search .

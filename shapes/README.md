@@ -1,21 +1,32 @@
-# AGSMO SHACL shapes (first cut)
+# AGSMO SHACL shapes (v0.2)
 
 Structural validation for **instance / usage graphs** (ABox), not a replacement
 for the OWL TBox in `ontology/agsmo.ttl`.
 
 | File | Role |
 |------|------|
-| [`agsmo-shapes.ttl`](agsmo-shapes.ttl) | NodeShapes for Agent, Goal, SubGoal, Constraint, Action, Outcome, Episode |
+| [`agsmo-shapes.ttl`](agsmo-shapes.ttl) | NodeShapes for Agent, Goal, SubGoal, Constraint, Action, Outcome, Episode + dual-edge SPARQL constraints |
 
-## Design (first cut)
+## Design (v0.2)
 
-**Required (strict enough for demos + library writes):**
+**Required (class shapes):**
 
 - Goal / SubGoal: `description`, controlled `status`
 - SubGoal: `stepIndex` ≥ 0
 - Action: `description`, `performedBy` → Agent
 - Outcome: `description`, `success` (boolean)
 - Constraint, Agent, Episode: `description`
+
+**Required (dual edges, AGSMO 0.2):** if a forward link exists, the inverse MUST exist:
+
+| Forward | Inverse |
+|---------|---------|
+| `hasSubGoal` | `subGoalOf` |
+| `hasConstraint` | `constrains` |
+| `achievedBy` | `achieves` |
+| `hasOutcome` | `outcomeOf` |
+| `performedBy` | `performs` |
+| `partOfEpisode` | `includes` |
 
 **Optional (allowed missing):**
 

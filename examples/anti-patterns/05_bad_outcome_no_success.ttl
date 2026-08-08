@@ -2,9 +2,10 @@
 @prefix prov:  <http://www.w3.org/ns/prov#> .
 
 # BAD: Outcome without boolean success — fails OutcomeShape.
-# Cannot filter successes vs failures.
+# Dual edges present so the intended failure is missing success.
 
-agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" ;
+  agsmo:performs agsmo:act-x .
 
 agsmo:act-x a agsmo:Action , prov:Activity ;
   agsmo:description "Ran the suite" ;
@@ -12,5 +13,6 @@ agsmo:act-x a agsmo:Action , prov:Activity ;
   agsmo:hasOutcome agsmo:out-x .
 
 agsmo:out-x a agsmo:Outcome , prov:Entity ;
-  agsmo:description "Suite finished with issues" .
+  agsmo:description "Suite finished with issues" ;
+  agsmo:outcomeOf agsmo:act-x .
   # missing agsmo:success true/false

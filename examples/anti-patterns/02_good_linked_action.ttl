@@ -1,9 +1,10 @@
 @prefix agsmo: <https://w3id.org/agsmo/ns#> .
 @prefix prov:  <http://www.w3.org/ns/prov#> .
 
-# GOOD: Goal --achievedBy--> Action so explainability and planning stay connected.
+# GOOD: Goal↔Action dual links (achievedBy/achieves) + outcome dual + performs.
 
-agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" ;
+  agsmo:performs agsmo:act-search .
 
 agsmo:goal-search a agsmo:Goal ;
   agsmo:description "Find papers" ;
@@ -14,9 +15,11 @@ agsmo:act-search a agsmo:Action , prov:Activity ;
   agsmo:description "Queried the index" ;
   agsmo:rationale "Need candidates" ;
   agsmo:performedBy agsmo:agent-x ;
+  agsmo:achieves agsmo:goal-search ;
   agsmo:hasOutcome agsmo:out-search .
 
 agsmo:out-search a agsmo:Outcome , prov:Entity ;
   agsmo:description "Found 5 papers" ;
   agsmo:success true ;
+  agsmo:outcomeOf agsmo:act-search ;
   prov:wasGeneratedBy agsmo:act-search .

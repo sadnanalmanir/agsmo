@@ -1,7 +1,12 @@
-%% Lesson 03 — Action, outcome, explain
+%% Lesson 03 — Action, outcome, explain (dual edges)
 flowchart TB
+  AG["Agent<br/>performs"]
   SG["SubGoal 0<br/>Write core memory API<br/><b>completed</b>"]
-  ACT["Action + prov:Activity<br/>Implemented create_plan / progress<br/><i>rationale: offline tests; small API…</i><br/>performedBy → Agent"]
+  ACT["Action + prov:Activity<br/>Implemented create_plan / progress<br/><i>rationale…</i>"]
   OUT["Outcome<br/>Unit tests green<br/><b>success: true</b>"]
   SG -->|achievedBy| ACT
+  ACT -->|achieves| SG
+  ACT -->|performedBy| AG
+  AG -->|performs| ACT
   ACT -->|hasOutcome| OUT
+  OUT -->|outcomeOf| ACT

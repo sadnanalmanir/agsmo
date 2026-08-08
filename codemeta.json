@@ -1,11 +1,11 @@
 {
   "@context": "https://w3id.org/codemeta/3.1",
   "@type": "SoftwareSourceCode",
-  "name": "AGSMO — Agent Semantic Memory Ontology",
+  "name": "AGSMO \u2014 Agent Semantic Memory Ontology",
   "identifier": "agsmo",
-  "description": "OWL ontology for agent long-term semantic memory: goals, ordered subgoals (plans), constraints, actions, outcomes, episodes, and agents, with W3C PROV-O alignment for provenance.",
-  "version": "0.1.0",
-  "softwareVersion": "0.1.0",
+  "description": "OWL ontology for agent long-term semantic memory: goals, ordered subgoals (plans), constraints, actions, outcomes, episodes, and agents, with W3C PROV-O alignment and required dual-edge object properties (AGSMO 0.2).",
+  "version": "0.2.0",
+  "softwareVersion": "0.2.0",
   "license": "https://spdx.org/licenses/MIT",
   "programmingLanguage": [
     "OWL",
@@ -27,7 +27,7 @@
     "AGSMO"
   ],
   "dateCreated": "2026-08-07",
-  "dateModified": "2026-08-07",
+  "dateModified": "2026-08-08",
   "datePublished": "2026-08-07",
   "isAccessibleForFree": true,
   "developmentStatus": "https://www.repostatus.org/#wip",
@@ -58,7 +58,7 @@
       "email": "sadnanalmanir@gmail.com"
     }
   ],
-  "releaseNotes": "AGSMO 0.1.0 — initial public release of the Agent Semantic Memory Ontology. Distinct from ASMO (Atomistic Simulation Methods Ontology).",
+  "releaseNotes": "0.2.0: required inverse properties and dual-edge writer contract.",
   "relatedLink": [
     "https://www.w3.org/TR/prov-o/",
     "https://codemeta.github.io/",

@@ -6,10 +6,10 @@
 |--|--|
 | **Full name** | Agent Semantic Memory Ontology |
 | **Acronym** | **AGSMO** |
-| **Version** | 0.1.0 |
+| **Version** | **0.2.0** |
 | **Preferred prefix** | `agsmo` |
 | **Namespace IRI** | `https://w3id.org/agsmo/ns#` |
-| **Version IRI** | `https://w3id.org/agsmo/ns/0.1#` |
+| **Version IRI** | `https://w3id.org/agsmo/ns/0.2#` |
 | **Serialization** | [`ontology/agsmo.ttl`](ontology/agsmo.ttl) (Turtle / OWL) |
 | **License** | [MIT](LICENSE) |
 | **CodeMeta** | [`codemeta.json`](codemeta.json) |
@@ -25,7 +25,22 @@ AGSMO models structured agent memory suitable for:
 - **Episodes** (sessions) and **agents**
 - SPARQL queryability and “why did you do X?” provenance
 
-It does **not** claim to cover all agent communication protocols or workflow engines. Aligns with PROV-O; optional future mapping to EP-PLAN / other agent ontologies is out of scope for v0.1.
+It does **not** claim to cover all agent communication protocols or workflow engines. Aligns with PROV-O; optional future mapping to EP-PLAN / other agent ontologies is out of scope for v0.2.
+
+### Dual-edge writer contract (v0.2+)
+
+When you assert an object property that has an inverse, **also assert the inverse triple**. RDFLib does not invent the missing edge.
+
+| Forward | Inverse |
+|---------|---------|
+| `hasSubGoal` | `subGoalOf` |
+| `hasConstraint` | `constrains` |
+| `achievedBy` | `achieves` |
+| `hasOutcome` | `outcomeOf` |
+| `performedBy` | `performs` |
+| `partOfEpisode` | `includes` |
+
+See [docs/ONTOLOGY.md](docs/ONTOLOGY.md) and SHACL dual-edge constraints in [`shapes/`](shapes/).
 
 ## Quick load (Python / RDFLib)
 
@@ -130,7 +145,7 @@ Register redirects on [perma-id/w3id.org](https://github.com/perma-id/w3id.org) 
   author       = {Al Manir, Sadnan},
   year         = {2026},
   howpublished = {\url{https://github.com/sadnanalmanir/agsmo}},
-  note         = {Version 0.1.0}
+  note         = {Version 0.2.0}
 }
 ```
 

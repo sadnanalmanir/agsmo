@@ -1,9 +1,10 @@
 @prefix agsmo: <https://w3id.org/agsmo/ns#> .
 @prefix prov:  <http://www.w3.org/ns/prov#> .
 
-# GOOD: Outcome records success flag.
+# GOOD: Outcome records success flag; dual hasOutcome/outcomeOf + performs.
 
-agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" .
+agsmo:agent-x a agsmo:Agent ; agsmo:description "demo agent" ;
+  agsmo:performs agsmo:act-x .
 
 agsmo:act-x a agsmo:Action , prov:Activity ;
   agsmo:description "Ran the suite" ;
@@ -13,4 +14,5 @@ agsmo:act-x a agsmo:Action , prov:Activity ;
 agsmo:out-x a agsmo:Outcome , prov:Entity ;
   agsmo:description "Suite finished with issues" ;
   agsmo:success false ;
+  agsmo:outcomeOf agsmo:act-x ;
   prov:wasGeneratedBy agsmo:act-x .

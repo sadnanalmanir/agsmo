@@ -15,7 +15,7 @@
 @prefix widoco: <https://w3id.org/widoco/vocab#> .
 
 ################################################################################
-# Agent Semantic Memory Ontology (AGSMO) — v0.1.0
+# Agent Semantic Memory Ontology (AGSMO) — v0.2.0
 #
 # Annotated for WIDOCO/LODE documentation best practices:
 #   https://dgarijo.github.io/Widoco/doc/bestPractices/index-en.html
@@ -25,11 +25,16 @@
 # Namespace: https://w3id.org/agsmo/ns#
 # Prefix:    agsmo
 # Not ASMO (Atomistic Simulation Methods Ontology).
+#
+# Writer contract (v0.2+): for every object-property link that has an inverse,
+# instance graphs MUST assert BOTH directions. RDFLib does not materialize
+# owl:inverseOf; one-sided writes break inverse SPARQL and SHACL dual-edge rules.
 ################################################################################
 
 agsmo: a owl:Ontology ;
-    owl:versionIRI <https://w3id.org/agsmo/ns/0.1#> ;
-    owl:versionInfo "0.1.0" ;
+    owl:versionIRI <https://w3id.org/agsmo/ns/0.2#> ;
+    owl:versionInfo "0.2.0" ;
+    owl:priorVersion <https://w3id.org/agsmo/ns/0.1#> ;
     owl:imports <http://www.w3.org/ns/prov-o#> ;
 
     # --- Identity (WIDOCO recommended) ---
@@ -75,14 +80,22 @@ Most agents remember only chat transcripts or vector embeddings. AGSMO treats me
 
 ```
 Agent ──performs──► Action ──hasOutcome──► Outcome
+  ▲         │          ▲          │
+  └──performedBy───────┘    outcomeOf
                        ▲
-                       │ achievedBy
-Episode ◄──partOf── Goal ──hasConstraint──► Constraint
-                     │
-                     └──hasSubGoal──► SubGoal (stepIndex 0..n)
+                       │ achievedBy / achieves
+Episode ◄──includes── Goal ──hasConstraint──► Constraint
+   partOfEpisode         │         constrains
+                         └──hasSubGoal / subGoalOf──► SubGoal (stepIndex)
 ```
 
 A multi-step **plan** is a root Goal with ordered SubGoals — there is **no** separate Plan class.
+
+## Bidirectional links (v0.2)
+
+When you assert a forward object property that has an inverse, **also assert the inverse triple**.
+Pairs: hasSubGoal↔subGoalOf, hasConstraint↔constrains, achievedBy↔achieves,
+hasOutcome↔outcomeOf, performedBy↔performs, partOfEpisode↔includes.
 
 ## Learn with progressive examples
 
@@ -124,7 +137,7 @@ agsmo:goal-x a agsmo:Goal ; agsmo:description "Do X" ; agsmo:status "active" .
     # --- Dates / versioning ---
     dcterms:created "2026-08-07"^^xsd:date ;
     dcterms:issued "2026-08-07"^^xsd:date ;
-    dcterms:modified "2026-08-07"^^xsd:date ;
+    dcterms:modified "2026-08-08"^^xsd:date ;
     dcterms:license <https://spdx.org/licenses/MIT> ;
     dcterms:rights "Copyright (c) 2026 Sadnan Al Manir. MIT License."@en ;
     bibo:status "Ontology Specification Draft"@en ;
@@ -136,8 +149,8 @@ agsmo:goal-x a agsmo:Goal ; agsmo:description "Do X" ; agsmo:status "active" .
                  <https://sadnanalmanir.github.io/agsmo/> ,
                  <https://github.com/sadnanalmanir/agsmo> ,
                  <https://ocdo.github.io/asmo/> ;
-    dcterms:bibliographicCitation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.1.0. https://github.com/sadnanalmanir/agsmo"@en ;
-    schema:citation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.1.0. https://github.com/sadnanalmanir/agsmo"@en ;
+    dcterms:bibliographicCitation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.2.0. https://github.com/sadnanalmanir/agsmo"@en ;
+    schema:citation "Al Manir, S. (2026). Agent Semantic Memory Ontology (AGSMO) 0.2.0. https://github.com/sadnanalmanir/agsmo"@en ;
     vann:example <https://github.com/sadnanalmanir/agsmo/blob/main/examples/README.md> ;
     vann:example <https://github.com/sadnanalmanir/agsmo/blob/main/examples/04_literature_review_full.ttl> ;
     skos:example "Progressive examples in the repository examples/ folder: start with 01_minimal_goal.ttl, then 02–05; full happy path is 04_literature_review_full.ttl; SPARQL in queries.sparql."@en .
@@ -306,15 +319,21 @@ agsmo:statusAbandoned a agsmo:GoalStatus ;
 
 ################################################################################
 # Object properties
+#
+# Writer contract (AGSMO 0.2+): every pair below is dual-asserted in instance
+# data. If you write the forward edge, MUST also write the inverse edge (and
+# vice versa). Tools without an OWL reasoner will not invent the missing side.
 ################################################################################
 
 agsmo:hasSubGoal a owl:ObjectProperty , owl:TransitiveProperty ;
     rdfs:label "has sub-goal"@en ;
     skos:prefLabel "has sub-goal"@en ;
-    rdfs:comment "Decomposes a goal into a child goal. Ordered multi-step plans pair this with agsmo:stepIndex on each child."@en ;
+    rdfs:comment """Decomposes a goal into a child goal. Ordered multi-step plans pair this with agsmo:stepIndex on each child.
+MUST also assert the inverse agsmo:subGoalOf on the child (AGSMO 0.2 writer contract)."""@en ;
     skos:definition "Relates a parent goal to one of its subgoals."@en ;
     skos:example "Root literature-review goal hasSubGoal search-papers and summarize."@en ;
-    vann:example "agsmo:goal/lit-review agsmo:hasSubGoal agsmo:goal/search-papers ."@en ;
+    vann:example """agsmo:goal/lit-review agsmo:hasSubGoal agsmo:goal/search-papers .
+agsmo:goal/search-papers agsmo:subGoalOf agsmo:goal/lit-review ."""@en ;
     rdfs:domain agsmo:Goal ;
     rdfs:range agsmo:Goal ;
     owl:inverseOf agsmo:subGoalOf ;
@@ -324,7 +343,8 @@ agsmo:hasSubGoal a owl:ObjectProperty , owl:TransitiveProperty ;
 agsmo:subGoalOf a owl:ObjectProperty ;
     rdfs:label "sub-goal of"@en ;
     skos:prefLabel "sub-goal of"@en ;
-    rdfs:comment "Inverse of hasSubGoal. Optional in writers; many tools only store hasSubGoal."@en ;
+    rdfs:comment """Inverse of hasSubGoal. REQUIRED in instance data whenever hasSubGoal is asserted
+(AGSMO 0.2+; RDF stores do not auto-materialize owl:inverseOf)."""@en ;
     skos:definition "Relates a child goal to its parent goal."@en ;
     skos:example "search-papers is a subGoalOf lit-review."@en ;
     vann:example "agsmo:goal/search-papers agsmo:subGoalOf agsmo:goal/lit-review ."@en ;
@@ -337,34 +357,69 @@ agsmo:subGoalOf a owl:ObjectProperty ;
 agsmo:hasConstraint a owl:ObjectProperty ;
     rdfs:label "has constraint"@en ;
     skos:prefLabel "has constraint"@en ;
-    rdfs:comment "Associates a constraint with a goal (usually the root plan goal so all steps inherit the rule conceptually)."@en ;
+    rdfs:comment """Associates a constraint with a goal (usually the root plan goal so all steps inherit the rule conceptually).
+MUST also assert agsmo:constrains from the constraint to the goal (AGSMO 0.2)."""@en ;
     skos:definition "Links a goal to a constraint that should guide work on that goal."@en ;
     skos:example "lit-review hasConstraint peer-reviewed and time-box."@en ;
-    vann:example "agsmo:goal/lit-review agsmo:hasConstraint agsmo:constraint/peer-reviewed ."@en ;
+    vann:example """agsmo:goal/lit-review agsmo:hasConstraint agsmo:constraint/peer-reviewed .
+agsmo:constraint/peer-reviewed agsmo:constrains agsmo:goal/lit-review ."""@en ;
     rdfs:domain agsmo:Goal ;
     rdfs:range agsmo:Constraint ;
+    owl:inverseOf agsmo:constrains ;
+    rdfs:isDefinedBy agsmo: ;
+    sw:term_status "stable" .
+
+agsmo:constrains a owl:ObjectProperty ;
+    rdfs:label "constrains"@en ;
+    skos:prefLabel "constrains"@en ;
+    rdfs:comment """Inverse of hasConstraint. REQUIRED whenever hasConstraint is asserted (AGSMO 0.2)."""@en ;
+    skos:definition "Relates a constraint to a goal that it governs."@en ;
+    skos:example "peer-reviewed constrains lit-review."@en ;
+    vann:example "agsmo:constraint/peer-reviewed agsmo:constrains agsmo:goal/lit-review ."@en ;
+    rdfs:domain agsmo:Constraint ;
+    rdfs:range agsmo:Goal ;
+    owl:inverseOf agsmo:hasConstraint ;
     rdfs:isDefinedBy agsmo: ;
     sw:term_status "stable" .
 
 agsmo:achievedBy a owl:ObjectProperty ;
     rdfs:label "achieved by"@en ;
     skos:prefLabel "achieved by"@en ;
-    rdfs:comment "Links a goal to an action taken in service of that goal (typically the current subgoal)."@en ;
+    rdfs:comment """Links a goal to an action taken in service of that goal (typically the current subgoal).
+MUST also assert agsmo:achieves from the action to the goal (AGSMO 0.2)."""@en ;
     skos:definition "Relates a goal to an action performed toward achieving it."@en ;
     skos:example "Subgoal search-papers was achievedBy action/search."@en ;
-    vann:example "agsmo:goal/search-papers agsmo:achievedBy agsmo:action/search ."@en ;
+    vann:example """agsmo:goal/search-papers agsmo:achievedBy agsmo:action/search .
+agsmo:action/search agsmo:achieves agsmo:goal/search-papers ."""@en ;
     rdfs:domain agsmo:Goal ;
     rdfs:range agsmo:Action ;
+    owl:inverseOf agsmo:achieves ;
+    rdfs:isDefinedBy agsmo: ;
+    sw:term_status "stable" .
+
+agsmo:achieves a owl:ObjectProperty ;
+    rdfs:label "achieves"@en ;
+    skos:prefLabel "achieves"@en ;
+    rdfs:comment """Inverse of achievedBy. REQUIRED whenever achievedBy is asserted (AGSMO 0.2).
+Enables Action → Goal navigation for explainability without scanning reverse links."""@en ;
+    skos:definition "Relates an action to a goal it was performed to advance."@en ;
+    skos:example "action/search achieves search-papers."@en ;
+    vann:example "agsmo:action/search agsmo:achieves agsmo:goal/search-papers ."@en ;
+    rdfs:domain agsmo:Action ;
+    rdfs:range agsmo:Goal ;
+    owl:inverseOf agsmo:achievedBy ;
     rdfs:isDefinedBy agsmo: ;
     sw:term_status "stable" .
 
 agsmo:hasOutcome a owl:ObjectProperty ;
     rdfs:label "has outcome"@en ;
     skos:prefLabel "has outcome"@en ;
-    rdfs:comment "Links an action to its outcome. Prefer also asserting prov:wasGeneratedBy from the outcome to the action."@en ;
+    rdfs:comment """Links an action to its outcome. Prefer also asserting prov:wasGeneratedBy from the outcome to the action.
+MUST also assert agsmo:outcomeOf on the outcome (AGSMO 0.2)."""@en ;
     skos:definition "Relates an action to a recorded outcome."@en ;
     skos:example "action/search hasOutcome outcome/search-ok."@en ;
-    vann:example "agsmo:action/search agsmo:hasOutcome agsmo:outcome/search-ok ."@en ;
+    vann:example """agsmo:action/search agsmo:hasOutcome agsmo:outcome/search-ok .
+agsmo:outcome/search-ok agsmo:outcomeOf agsmo:action/search ."""@en ;
     rdfs:domain agsmo:Action ;
     rdfs:range agsmo:Outcome ;
     owl:inverseOf agsmo:outcomeOf ;
@@ -374,7 +429,7 @@ agsmo:hasOutcome a owl:ObjectProperty ;
 agsmo:outcomeOf a owl:ObjectProperty ;
     rdfs:label "outcome of"@en ;
     skos:prefLabel "outcome of"@en ;
-    rdfs:comment "Inverse of hasOutcome."@en ;
+    rdfs:comment """Inverse of hasOutcome. REQUIRED whenever hasOutcome is asserted (AGSMO 0.2)."""@en ;
     skos:definition "Relates an outcome to the action that produced it."@en ;
     skos:example "outcome/search-ok is an outcomeOf action/search."@en ;
     vann:example "agsmo:outcome/search-ok agsmo:outcomeOf agsmo:action/search ."@en ;
@@ -387,28 +442,64 @@ agsmo:outcomeOf a owl:ObjectProperty ;
 agsmo:performedBy a owl:ObjectProperty ;
     rdfs:label "performed by"@en ;
     skos:prefLabel "performed by"@en ;
-    rdfs:comment "Agent that performed the action. Aligns with (and is a sub-property of) prov:wasAssociatedWith."@en ;
+    rdfs:comment """Agent that performed the action. Aligns with (and is a sub-property of) prov:wasAssociatedWith.
+MUST also assert agsmo:performs from the agent to the action (AGSMO 0.2)."""@en ;
     skos:definition "Relates an action to the agent that carried it out."@en ;
     skos:example "action/search was performedBy agent/default-agent."@en ;
-    vann:example "agsmo:action/search agsmo:performedBy agsmo:agent/default-agent ."@en ;
+    vann:example """agsmo:action/search agsmo:performedBy agsmo:agent/default-agent .
+agsmo:agent/default-agent agsmo:performs agsmo:action/search ."""@en ;
     rdfs:domain agsmo:Action ;
     rdfs:range agsmo:Agent ;
     rdfs:subPropertyOf prov:wasAssociatedWith ;
+    owl:inverseOf agsmo:performs ;
+    rdfs:isDefinedBy agsmo: ;
+    sw:term_status "stable" .
+
+agsmo:performs a owl:ObjectProperty ;
+    rdfs:label "performs"@en ;
+    skos:prefLabel "performs"@en ;
+    rdfs:comment """Inverse of performedBy. REQUIRED whenever performedBy is asserted (AGSMO 0.2)."""@en ;
+    skos:definition "Relates an agent to an action it carried out."@en ;
+    skos:example "default-agent performs action/search."@en ;
+    vann:example "agsmo:agent/default-agent agsmo:performs agsmo:action/search ."@en ;
+    rdfs:domain agsmo:Agent ;
+    rdfs:range agsmo:Action ;
+    owl:inverseOf agsmo:performedBy ;
     rdfs:isDefinedBy agsmo: ;
     sw:term_status "stable" .
 
 agsmo:partOfEpisode a owl:ObjectProperty ;
     rdfs:label "part of episode"@en ;
     skos:prefLabel "part of episode"@en ;
-    rdfs:comment "Places a goal or action in a session/episode."@en ;
+    rdfs:comment """Places a goal or action in a session/episode.
+MUST also assert agsmo:includes from the episode to the member (AGSMO 0.2)."""@en ;
     skos:definition "Relates a goal or action to the episode in which it occurred."@en ;
     skos:example "Both the root goal and the search action are partOfEpisode demo-1."@en ;
-    vann:example "agsmo:goal/lit-review agsmo:partOfEpisode agsmo:episode/demo-1 ."@en ;
+    vann:example """agsmo:goal/lit-review agsmo:partOfEpisode agsmo:episode/demo-1 .
+agsmo:episode/demo-1 agsmo:includes agsmo:goal/lit-review ."""@en ;
     rdfs:domain [
         a owl:Class ;
         owl:unionOf ( agsmo:Goal agsmo:Action )
     ] ;
     rdfs:range agsmo:Episode ;
+    owl:inverseOf agsmo:includes ;
+    rdfs:isDefinedBy agsmo: ;
+    sw:term_status "stable" .
+
+agsmo:includes a owl:ObjectProperty ;
+    rdfs:label "includes"@en ;
+    skos:prefLabel "includes"@en ;
+    rdfs:comment """Inverse of partOfEpisode. REQUIRED whenever partOfEpisode is asserted (AGSMO 0.2).
+Lists goals and actions that belong to an episode."""@en ;
+    skos:definition "Relates an episode to a goal or action that is part of that session."@en ;
+    skos:example "episode demo-1 includes lit-review and action/search."@en ;
+    vann:example "agsmo:episode/demo-1 agsmo:includes agsmo:goal/lit-review , agsmo:action/search ."@en ;
+    rdfs:domain agsmo:Episode ;
+    rdfs:range [
+        a owl:Class ;
+        owl:unionOf ( agsmo:Goal agsmo:Action )
+    ] ;
+    owl:inverseOf agsmo:partOfEpisode ;
     rdfs:isDefinedBy agsmo: ;
     sw:term_status "stable" .
 
